@@ -1,0 +1,1 @@
+Plain functions like GetUser, GetAccounts, etc.
