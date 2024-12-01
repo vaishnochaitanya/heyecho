@@ -16,6 +16,7 @@ func main() {
 	}
 
 	e := echo.New()
+	e.HideBanner = true // Hide the echo server banner to avoid server version disclosure in logs
 
 	e.GET("/foo", handlers.HandleFoo)
 
