@@ -1,11 +1,10 @@
 package handlers
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo/v4"
+	"vchan.in/heyecho/views/foo"
 )
 
 func HandleFoo(c echo.Context) error {
-	return c.String(http.StatusOK, "foo")
+	return render(c, foo.Index())
 }
