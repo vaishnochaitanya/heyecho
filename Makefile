@@ -2,7 +2,7 @@ run: build
 	@./bin/heyecho
 
 build:
-	@go build -o bin/heyecho cmd/api/main.go
+	@go build -o bin/heyecho cmd/app/main.go
 
 up:
 	@go run cmd/migrate/main.go up
