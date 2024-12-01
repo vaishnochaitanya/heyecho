@@ -1,8 +1,11 @@
 run: build
 	@./bin/heyecho
 
-build:
+build: templ
 	@go build -o bin/heyecho cmd/app/main.go
+
+templ:
+	@templ generate
 
 up:
 	@go run cmd/migrate/main.go up
