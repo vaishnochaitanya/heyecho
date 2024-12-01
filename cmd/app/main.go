@@ -3,11 +3,11 @@ package main
 import (
 	"log"
 	"log/slog"
-	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"vchan.in/heyecho/handlers"
 )
 
 func main() {
@@ -17,13 +17,9 @@ func main() {
 
 	e := echo.New()
 
-	e.GET("/foo", handleFoo)
+	e.GET("/foo", handlers.HandleFoo)
 
 	httpAddr := os.Getenv("HTTP_ADDRESS")
 	slog.Info("Server started at " + httpAddr)
 	e.Logger.Fatal(e.Start(httpAddr))
-}
-
-func handleFoo(c echo.Context) error {
-	return c.String(http.StatusOK, "foo")
 }
