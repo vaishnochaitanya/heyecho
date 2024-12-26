@@ -2,35 +2,75 @@ package handlers
 
 import (
 	"crypto/subtle"
+	"encoding/base64"
+	"log/slog"
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo/v4"
+	"vchan.in/heyecho/types"
 )
+
+var profile = types.Profile
 
 // Basic authentication middleware
 func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	// Middleware function to handle authentication
 	return func(c echo.Context) error {
-		// Implement basic authentication here
-		username, password, ok := c.Request().BasicAuth()
-		if !ok {
-			// If the request does not contain basic auth headers, redirect to the login page
+		// Add exception for the following paths
+		excepted, nextPath := isException(c, next)
+		if excepted {
+			return nextPath // Continue to the next handler
+		}
+
+		slog.Info("ProfileAuthMiddleware: " + profile)
+		// Extract the token from the cookie
+		cookie, ok := c.Cookie("token")
+		if ok != nil {
 			return c.Redirect(http.StatusFound, "/login")
 		}
 
+		// Decode the token to get the email and password
+		token, ok := base64.StdEncoding.DecodeString(cookie.Value)
+		if ok != nil {
+			return c.Redirect(http.StatusFound, "/login")
+		}
+
+		// Split the token into email and password
+		credentials := string(token)
+		email, password, _ := strings.Cut(credentials, ":")
+
 		// List of valid user credentials
 		validCredentials := map[string]string{
-			"admin": "admin",
-			"user":  "user",
+			"admin@example.com": "admin",
+			"user@example.com":  "user",
 		}
 
 		// Check if the provided credentials are valid
-		if pass, ok := validCredentials[username]; ok && subtle.ConstantTimeCompare([]byte(password), []byte(pass)) == 1 {
-			// If authentication is successful, call the next handler
+		if pass, ok := validCredentials[email]; ok && subtle.ConstantTimeCompare([]byte(password), []byte(pass)) == 1 {
+			// If authentication is successful, set the profile
+			if email == "admin@example.com" {
+				profile = "admin"
+			} else if email != "" {
+				profile = "user"
+			}
+			c.Set("profile", profile)
 			return next(c)
 		}
 
-		// If authentication fails, redirect to the login page
-		return c.Redirect(http.StatusFound, "/login")
+		// If authentication fails, set the profile to guest
+		return next(c)
 	}
+}
+
+func isException(c echo.Context, next echo.HandlerFunc) (bool, error) {
+	exceptionPaths := []string{
+		"/login",
+		"/logout",
+	}
+	for _, path := range exceptionPaths {
+		if c.Path() == path {
+			return true, next(c)
+		}
+	}
+	return false, nil
 }
