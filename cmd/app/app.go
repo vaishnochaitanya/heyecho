@@ -27,17 +27,20 @@ func Server() {
 	e.Use(middleware.Secure())                                                         // Use secure middleware to set security headers
 	e.Use(middleware.Recover())                                                        // Recover middleware recovers from panics anywhere in the chain
 	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(5)))) // Rate limiter middleware
+	e.Use(handlers.HandleAuthMiddleware)                                               // Auth middleware
 
 	// Test page
 	e.GET("/foo", handlers.HandleFoo)
 
 	// Authencation pages with custom rate limiter 1 request per second only
 	e.GET("/login", handlers.HandleLogin, middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(1))))
+	e.POST("/login", handlers.HandleLogin, middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(1))))
+	e.GET("/logout", handlers.HandleLogout)
 
 	// Dashboard page
-	e.GET("/", handlers.HandleDashboard, handlers.HandleAuthMiddleware)
+	e.GET("/", handlers.HandleDashboard)
 
 	httpAddr := os.Getenv("HTTP_ADDRESS")
-	slog.Info("Server started at " + httpAddr)
+	slog.Info("Server started at 0.0.0.0" + httpAddr)
 	e.Logger.Fatal(e.Start(httpAddr))
 }
