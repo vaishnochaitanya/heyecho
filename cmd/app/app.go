@@ -7,6 +7,8 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"golang.org/x/time/rate"
 	"vchan.in/heyecho/handlers"
 )
 
@@ -18,13 +20,22 @@ func Server() {
 	e := echo.New()
 	e.HideBanner = true // Hide the echo server banner to avoid server version disclosure in logs
 
+	// Root level middleware
+	if os.Getenv("LOG_LEVEL") == "debug" {
+		e.Use(middleware.Logger())
+	}
+	e.Use(middleware.Secure())                                                         // Use secure middleware to set security headers
+	e.Use(middleware.Recover())                                                        // Recover middleware recovers from panics anywhere in the chain
+	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(5)))) // Rate limiter middleware
+
+	// Test page
 	e.GET("/foo", handlers.HandleFoo)
 
-	// Authencation pages
-	e.GET("/login", handlers.HandleLogin)
+	// Authencation pages with custom rate limiter 1 request per second only
+	e.GET("/login", handlers.HandleLogin, middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(1))))
 
 	// Dashboard page
-	e.GET("/", handlers.HandleDashboard)
+	e.GET("/", handlers.HandleDashboard, handlers.HandleAuthMiddleware)
 
 	httpAddr := os.Getenv("HTTP_ADDRESS")
 	slog.Info("Server started at " + httpAddr)
