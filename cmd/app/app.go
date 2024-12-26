@@ -20,6 +20,12 @@ func Server() {
 
 	e.GET("/foo", handlers.HandleFoo)
 
+	// Authencation pages
+	e.GET("/login", handlers.HandleLogin)
+
+	// Dashboard page
+	e.GET("/", handlers.HandleDashboard)
+
 	httpAddr := os.Getenv("HTTP_ADDRESS")
 	slog.Info("Server started at " + httpAddr)
 	e.Logger.Fatal(e.Start(httpAddr))
