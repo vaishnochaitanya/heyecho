@@ -5,6 +5,8 @@ import (
 	"vchan.in/heyecho/views/foo"
 )
 
+var profile = "guest"
+
 func HandleFoo(c echo.Context) error {
-	return render(c, foo.Index())
+	return render(c, foo.Foo(profile))
 }
