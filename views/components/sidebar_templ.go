@@ -34,11 +34,6 @@ func Sidebar(profile string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		} else {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<aside class=\"fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700\" aria-label=\"Sidenav\" id=\"drawer-navigation\"><div class=\"overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800\"><p class=\"text-center text-red-500\">Error: Unable to determine the user profile</p></div></aside>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
 		}
 		return templ_7745c5c3_Err
 	})

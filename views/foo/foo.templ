@@ -2,8 +2,8 @@ package foo
 
 import "vchan.in/heyecho/views/layout"
 
-templ Index() {
-	@layout.Base() {
+templ Foo(profile string) {
+	@layout.Base(profile) {
 		<section class="bg-white dark:bg-gray-900">
 			<div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
 				<div class="mx-auto max-w-screen-sm text-center">
