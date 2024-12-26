@@ -2,7 +2,7 @@ package layout
 
 import "vchan.in/heyecho/views/components"
 
-templ Base() {
+templ Base(profile string) {
   <!DOCTYPE html>
   <html>
 
@@ -43,13 +43,13 @@ templ Base() {
 
       if profile != "guest" {
         <main class="p-4 md:ml-64 h-auto pt-20">
-          <div class="border-2 rounded-lg mb-4">
+          <div class="rounded-lg mb-4">
             { children... }
           </div>
         </main>
       } else {
         <main class="h-auto">
-          <div class="border-2 rounded-lg mb-4">
+          <div class="rounded-lg mb-4">
             { children... }
           </div>
         </main>

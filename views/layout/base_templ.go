@@ -54,7 +54,7 @@ func Base(profile string) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if profile != "guest" {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"p-4 md:ml-64 h-auto pt-20\"><div class=\"border-2 rounded-lg mb-4\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"p-4 md:ml-64 h-auto pt-20\"><div class=\"rounded-lg mb-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -67,7 +67,7 @@ func Base(profile string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"h-auto\"><div class=\"border-2 rounded-lg mb-4\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"h-auto\"><div class=\"rounded-lg mb-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
