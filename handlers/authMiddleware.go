@@ -3,7 +3,6 @@ package handlers
 import (
 	"crypto/subtle"
 	"encoding/base64"
-	"log/slog"
 	"net/http"
 	"strings"
 
@@ -22,7 +21,6 @@ func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			return nextPath // Continue to the next handler
 		}
 
-		slog.Info("ProfileAuthMiddleware: " + profile)
 		// Extract the token from the cookie
 		cookie, ok := c.Cookie("token")
 		if ok != nil {
