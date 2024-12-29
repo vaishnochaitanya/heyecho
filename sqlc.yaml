@@ -2,6 +2,6 @@ version: "1"
 packages:
   - name: "db"
     path: "db"
-    queries: "sql/"
-    schema: "schema/"
+    queries: "db/sql/"
+    schema: "db/schema/"
     engine: "sqlite"
