@@ -1,0 +1,7 @@
+version: "1"
+packages:
+  - name: "db"
+    path: "db"
+    queries: "sql/"
+    schema: "schema/"
+    engine: "sqlite"
