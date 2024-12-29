@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"vchan.in/heyecho/db"
 	"vchan.in/heyecho/views/auth/login"
 )
 
@@ -17,23 +18,25 @@ func HandleLogin(c echo.Context) error {
 		email := c.FormValue("email")
 		password := c.FormValue("password")
 
-		// List of valid user credentials
-		validCredentials := map[string]string{
-			"admin@example.com": "admin",
-			"user@example.com":  "user",
+		// Check if the user email exists
+		user, err := db.CallQueries.GetUserByEmail(c.Request().Context(), email)
+		if err != nil {
+			// If the user does not exist, redirect to the login page
+			return c.Redirect(http.StatusFound, "/login")
+		}
+		// Check if the user email has a valid password
+		if user.Email != email && user.Password != password {
+			slog.Info(email + " failed to login")
+			return c.Redirect(http.StatusFound, "/login")
 		}
 
 		// Check if the provided credentials are valid
-		if pass, ok := validCredentials[email]; ok && subtle.ConstantTimeCompare([]byte(password), []byte(pass)) == 1 {
+		if subtle.ConstantTimeCompare([]byte(password), []byte(user.Password)) == 1 {
 			// If authentication is successful, call the next handler
 			c.Response().Header().Set("Set-Cookie", "token="+basicAuth(email, password)+"; Path=/")
 			slog.Info(email + " logged in")
 			return c.Redirect(http.StatusFound, "/")
 		}
-
-		// If the credentials are incorrect, set the profile to guest
-		slog.Info(email + " failed to login")
-		return c.Redirect(http.StatusFound, "/login")
 	}
 	return render(c, login.Login(profile))
 }
