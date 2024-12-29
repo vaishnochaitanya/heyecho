@@ -3,10 +3,12 @@ package handlers
 import (
 	"crypto/subtle"
 	"encoding/base64"
+	"log/slog"
 	"net/http"
 	"strings"
 
 	"github.com/labstack/echo/v4"
+	"vchan.in/heyecho/db"
 	"vchan.in/heyecho/types"
 )
 
@@ -37,14 +39,20 @@ func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		credentials := string(token)
 		email, password, _ := strings.Cut(credentials, ":")
 
-		// List of valid user credentials
-		validCredentials := map[string]string{
-			"admin@example.com": "admin",
-			"user@example.com":  "user",
+		// Check if the user email exists
+		user, err := db.CallQueries.GetUserByEmail(c.Request().Context(), email)
+		if err != nil {
+			// If the user does not exist, redirect to the login page
+			return c.Redirect(http.StatusFound, "/login")
+		}
+		// Check if the user email has a valid password
+		if user.Email != email && user.Password != password {
+			slog.Info(email + " failed to login")
+			return c.Redirect(http.StatusFound, "/login")
 		}
 
 		// Check if the provided credentials are valid
-		if pass, ok := validCredentials[email]; ok && subtle.ConstantTimeCompare([]byte(password), []byte(pass)) == 1 {
+		if subtle.ConstantTimeCompare([]byte(password), []byte(user.Password)) == 1 {
 			// If authentication is successful, set the profile
 			if email == "admin@example.com" {
 				profile = "admin"
