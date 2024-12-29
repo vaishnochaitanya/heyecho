@@ -21,8 +21,10 @@ func HandleLogin(c echo.Context) error {
 		// Check if the user email exists
 		user, err := db.CallQueries.GetUserByEmail(c.Request().Context(), email)
 		if err != nil {
-			// If the user does not exist, redirect to the login page
-			return c.Redirect(http.StatusFound, "/login")
+			// If the user does not exist, send an error message to frontend
+			color := "error"
+			alert := "Incorrect email or password"
+			return c.Redirect(http.StatusFound, "/login?level="+color+"&alert="+alert)
 		}
 		// Check if the user email has a valid password
 		if user.Email != email && user.Password != password {
