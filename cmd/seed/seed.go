@@ -16,7 +16,7 @@ func run() error {
 		Role:     "admin",
 	})
 	if err != nil {
-		slog.Error("User creation failed: Already exists")
+		slog.Warn("Admin user creation failed: Already exists")
 	} else {
 		slog.Info("Admin user created with email: admin@example.com and password: admin")
 	}
