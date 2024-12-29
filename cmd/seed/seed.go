@@ -1,1 +1,32 @@
 package seed
+
+import (
+	"context"
+	"log/slog"
+
+	"vchan.in/heyecho/db"
+)
+
+func run() error {
+	ctx := context.Background()
+	// create an admin user
+	err := db.CallQueries.CreateUser(ctx, db.CreateUserParams{
+		Email:    "admin@example.com",
+		Password: "admin",
+		Role:     "admin",
+	})
+	if err != nil {
+		slog.Error("User creation failed: Already exists")
+	} else {
+		slog.Info("Admin user created with email: admin@example.com and password: admin")
+	}
+
+	return nil
+}
+
+// Seed the database
+func Seed() {
+	if err := run(); err != nil {
+		slog.Error(err.Error())
+	}
+}
