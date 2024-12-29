@@ -1,11 +1,14 @@
 run: build
-	@./bin/heyecho
+	@CGO_ENABLED=1 ./bin/heyecho
 
-build: templ
+build: templ sqlc
 	@go build -o bin/heyecho main.go
 
 templ:
 	@templ generate
+
+sqlc:
+	@sqlc generate
 
 up:
 	@go run cmd/migrate/up.go up
