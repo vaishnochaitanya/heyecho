@@ -4,39 +4,38 @@ import (
 	"context"
 	"database/sql"
 	_ "embed"
-	"log"
+	"log/slog"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
+//go:embed schema/schema.sql
 var ddl string
+
+var Sqlc *sql.DB // DB is a package level variable to hold the connection pool
+
+var CallQueries *Queries
 
 func run() error {
 	ctx := context.Background()
-	db, err := sql.Open("sqlite3", "file:app.db?cache=shared&mode=rwc")
+	var err error
+	Sqlc, err = sql.Open("sqlite3", "file:app.db?cache=shared&mode=rwc")
 	if err != nil {
 		return err
 	}
 
 	// create tables
-	if _, err := db.ExecContext(ctx, ddl); err != nil {
-		return err
+	if _, err := Sqlc.ExecContext(ctx, ddl); err != nil {
+		slog.Warn(err.Error())
 	}
 
-	queries := New(db)
-
-	// List all users
-	users, err := queries.ListUsers(ctx)
-	if err != nil {
-		return err
-	}
-	log.Println("Users:", users)
+	CallQueries = New(Sqlc) // Initialize the queries
 
 	return nil
 }
 
 func InitDB() {
 	if err := run(); err != nil {
-		log.Fatal(err)
+		slog.Error(err.Error())
 	}
 }
