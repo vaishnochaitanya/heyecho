@@ -9,8 +9,8 @@ import (
 	"context"
 )
 
-const createUser = `-- name: CreateUser :one
-INSERT INTO users (email, password, role) VALUES (?, ?, ?) RETURNING id, email, password, role
+const createUser = `-- name: CreateUser :exec
+INSERT INTO users (email, password, role) VALUES (?, ?, ?)
 `
 
 type CreateUserParams struct {
@@ -19,16 +19,9 @@ type CreateUserParams struct {
 	Role     string
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createUser, arg.Email, arg.Password, arg.Role)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Email,
-		&i.Password,
-		&i.Role,
-	)
-	return i, err
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
+	_, err := q.db.ExecContext(ctx, createUser, arg.Email, arg.Password, arg.Role)
+	return err
 }
 
 const deleteUser = `-- name: DeleteUser :one
