@@ -20,7 +20,7 @@ migration:
 	@migrate create -ext sql -dir cmd/migrate/migrations $(filter-out $@,$(MAKECMDGOALS))
 
 drop:
-	@go run cmd/drop/drop.go
+	@rm -f app.db
 
 seed:
 	@go run cmd/seed/seed.go
