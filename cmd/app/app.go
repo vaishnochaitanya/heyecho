@@ -40,7 +40,13 @@ func Server() {
 	// Dashboard page
 	e.GET("/", handlers.HandleDashboard)
 
+	// Admin pages
+	e.GET("/admin", handlers.HandleAdmin)
+
 	httpAddr := os.Getenv("HTTP_ADDRESS")
 	slog.Info("Server started at 0.0.0.0" + httpAddr)
-	e.Logger.Fatal(e.Start(httpAddr))
+	server := e.Start(httpAddr)
+	if server != nil {
+		slog.Error(server.Error())
+	}
 }
