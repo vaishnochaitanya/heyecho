@@ -12,7 +12,7 @@ import (
 	"vchan.in/heyecho/types"
 )
 
-var profile = types.Profile
+var role = types.Role
 
 // Basic authentication middleware
 func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
@@ -53,17 +53,17 @@ func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		// Check if the provided credentials are valid
 		if subtle.ConstantTimeCompare([]byte(password), []byte(user.Password)) == 1 {
-			// If authentication is successful, set the profile
+			// If authentication is successful, set the role
 			if email == "admin@example.com" {
-				profile = "admin"
+				role = "admin"
 			} else if email != "" {
-				profile = "user"
+				role = "user"
 			}
-			c.Set("profile", profile)
+			c.Set("role", role)
 			return next(c)
 		}
 
-		// If authentication fails, set the profile to guest
+		// If authentication fails, set the role to guest
 		return next(c)
 	}
 }

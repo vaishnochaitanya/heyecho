@@ -40,14 +40,14 @@ func HandleLogin(c echo.Context) error {
 			return c.Redirect(http.StatusFound, "/")
 		}
 	}
-	return render(c, login.Login(profile))
+	return render(c, login.Login(role))
 }
 
 // HandleLogout handles the logout page.
 func HandleLogout(c echo.Context) error {
 	c.Response().Header().Set("Set-Cookie", "token=; Path=/; Max-Age=-1")
-	profile = "guest"
-	c.Set("profile", profile)
+	role = "guest"
+	c.Set("role", role)
 	return c.Redirect(http.StatusFound, "/login")
 }
 

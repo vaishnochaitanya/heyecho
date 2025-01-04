@@ -8,17 +8,17 @@ import (
 )
 
 func HandleAdmin(c echo.Context) error {
-	profile := c.Get("profile").(string)
-	if profile != "admin" {
+	role := c.Get("role").(string)
+	if role != "admin" {
 		return c.Redirect(http.StatusSeeOther, "/")
 	}
-	return render(c, admin.Admin(profile))
+	return render(c, admin.Admin(role))
 }
 
 func HandleUsers(c echo.Context) error {
-	profile := c.Get("profile").(string)
-	if profile != "admin" {
+	role := c.Get("role").(string)
+	if role != "admin" {
 		return c.Redirect(http.StatusSeeOther, "/")
 	}
-	return render(c, admin.Users(profile))
+	return render(c, admin.Users(role))
 }

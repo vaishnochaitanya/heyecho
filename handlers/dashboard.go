@@ -6,9 +6,9 @@ import (
 )
 
 func HandleDashboard(c echo.Context) error {
-	profile := c.Get("profile").(string)
-	if profile == "" {
-		profile = "guest"
+	role := c.Get("role").(string)
+	if role == "" {
+		role = "guest"
 	}
-	return render(c, dashboard.Dashboard(profile))
+	return render(c, dashboard.Dashboard(role))
 }

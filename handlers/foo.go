@@ -6,5 +6,5 @@ import (
 )
 
 func HandleFoo(c echo.Context) error {
-	return render(c, foo.Foo(profile))
+	return render(c, foo.Foo(role))
 }

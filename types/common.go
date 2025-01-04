@@ -2,12 +2,12 @@ package types
 
 type ComponentOptions struct {
 	Display bool
-	Profile string
+	Role    string
 }
 
 // Define the context key type.
 type contextKey string
 
 // Create a context key for the theme.
-var ProfileContextKey contextKey = "profile"
-var Profile string = "guest"
+var RoleContextKey contextKey = "role"
+var Role string = "guest"

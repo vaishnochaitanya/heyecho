@@ -10,7 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "vchan.in/heyecho/views/components"
 
-func Base(profile string) templ.Component {
+func Base(role string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -31,11 +31,11 @@ func Base(profile string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>My App</title><link href=\"https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css\" rel=\"stylesheet\"><link href=\"https://cdn.datatables.net/2.1.8/js/dataTables.tailwindcss.js\" rel=\"stylesheet\"><script src=\"https://code.jquery.com/jquery-3.7.1.js\"></script><script src=\"https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,container-queries\"></script><script src=\"https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js\"></script><script src=\"https://cdn.datatables.net/2.1.8/js/dataTables.js\"></script><script src=\"https://cdn.datatables.net/2.1.8/js/dataTables.min.js\"></script></head><body><div class=\"antialiased bg-gray-50 dark:bg-gray-900\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html lang=\"en\" xml:lang=\"en\" style=\"background: #f9fafb;\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>My App</title><link href=\"https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css\" rel=\"stylesheet\"><link href=\"https://cdn.datatables.net/2.1.8/js/dataTables.tailwindcss.js\" rel=\"stylesheet\"><script src=\"https://code.jquery.com/jquery-3.7.1.js\"></script><script src=\"https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,container-queries\"></script><script src=\"https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js\"></script><script src=\"https://cdn.datatables.net/2.1.8/js/dataTables.js\"></script><script src=\"https://cdn.datatables.net/2.1.8/js/dataTables.min.js\"></script></head><body><div class=\"antialiased bg-gray-50 dark:bg-gray-900\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if profile != "guest" {
+		if role != "guest" {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Navbar --> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -49,11 +49,11 @@ func Base(profile string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Sidebar(profile).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.Sidebar(role).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if profile != "guest" {
+		if role != "guest" {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"p-4 md:ml-64 h-auto pt-20\"><div class=\"rounded-lg mb-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

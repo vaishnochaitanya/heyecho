@@ -2,9 +2,9 @@ package layout
 
 import "vchan.in/heyecho/views/components"
 
-templ Base(profile string) {
+templ Base(role string) {
   <!DOCTYPE html>
-  <html>
+  <html lang="en" xml:lang="en" style="background: #f9fafb;">
 
   <head>
     <meta charset="UTF-8" />
@@ -22,15 +22,15 @@ templ Base(profile string) {
 
   <body>
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
-      if profile != "guest" {
+      if role != "guest" {
         <!-- Navbar -->
         @components.Navbar()
       }
 
       <!-- Sidebar -->
-      @components.Sidebar(profile)
+      @components.Sidebar(role)
 
-      if profile != "guest" {
+      if role != "guest" {
         <main class="p-4 md:ml-64 h-auto pt-20">
           <div class="rounded-lg mb-4">
             { children... }
