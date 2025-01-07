@@ -3,9 +3,10 @@ package admin
 import (
 "vchan.in/heyecho/views/layout"
 "vchan.in/heyecho/views/components/admin"
+"vchan.in/heyecho/types"
 )
 
-templ Users(role string) {
+templ Users(role string, users []types.User) {
 @layout.Base(role) {
 <div class="grid rounded-lg h-auto mb-4">
     <h5 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Users</h5>
@@ -51,10 +52,10 @@ templ Users(role string) {
                         Name
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Email
+                        Role
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Role
+                        Date Added
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Action
@@ -62,53 +63,32 @@ templ Users(role string) {
                 </tr>
             </thead>
             <tbody>
+                for _, item := range users {
                 <tr
                     class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                        <img class="w-10 h-10 rounded-full" src="/docs/images/people/role-picture-1.jpg" alt="Jese">
+                        <img class="w-10 h-10 rounded-full" src={item.GeneratedPhoto} alt="avatar">
                         <div class="ps-3">
-                            <div class="text-base font-semibold">Neil Sims</div>
+                            <div class="text-base font-semibold">{item.Name}</div>
+                            <div class="font-normal text-gray-500">{item.Email}</div>
                         </div>
                     </th>
                     <td class="px-6 py-4">
-                        neil.sims@flowbite.com
+                        {item.Role}
                     </td>
                     <td class="px-6 py-4">
                         <div class="flex items-center">
-                            <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> Online
+                            {item.CreatedAt}
                         </div>
                     </td>
                     <td class="px-6 py-4">
                         <!-- Modal toggle -->
-                        <a href="#" id="user1" type="button" data-modal-target="editUserModal"
+                        <a href="#" id="user{item.ID}" type="button" data-modal-target="editUserModal"
                             data-modal-show="editUserModal"
                             class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit user</a>
                     </td>
                 </tr>
-                <tr
-                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <th scope="row"
-                        class="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        <img class="w-10 h-10 rounded-full" src="/docs/images/people/role-picture-3.jpg" alt="Jese">
-                        <div class="ps-3">
-                            <div class="text-base font-semibold">Bonnie Green</div>
-                        </div>
-                    </th>
-                    <td class="px-6 py-4">
-                        bonnie@flowbite.com
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center">
-                            <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> Online
-                        </div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <!-- Modal toggle -->
-                        <a href="#" type="button" id="user2" data-modal-target="editUserModal"
-                            data-modal-show="editUserModal"
-                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit user</a>
-                    </td>
-                </tr>
+                }
             </tbody>
         </table>
         <div
