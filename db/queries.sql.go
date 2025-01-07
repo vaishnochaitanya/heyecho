@@ -7,25 +7,34 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 const createUser = `-- name: CreateUser :exec
-INSERT INTO users (email, password, role) VALUES (?, ?, ?)
+INSERT INTO users (name, email, password, role, created_at) VALUES (?, ?, ?, ?, ?)
 `
 
 type CreateUserParams struct {
-	Email    string
-	Password string
-	Role     string
+	Name      string
+	Email     string
+	Password  string
+	Role      string
+	CreatedAt time.Time
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
-	_, err := q.db.ExecContext(ctx, createUser, arg.Email, arg.Password, arg.Role)
+	_, err := q.db.ExecContext(ctx, createUser,
+		arg.Name,
+		arg.Email,
+		arg.Password,
+		arg.Role,
+		arg.CreatedAt,
+	)
 	return err
 }
 
 const deleteUser = `-- name: DeleteUser :one
-DELETE FROM users WHERE email = ? RETURNING id, email, password, role
+DELETE FROM users WHERE email = ? RETURNING id, name, email, password, role, created_at
 `
 
 func (q *Queries) DeleteUser(ctx context.Context, email string) (User, error) {
@@ -33,15 +42,17 @@ func (q *Queries) DeleteUser(ctx context.Context, email string) (User, error) {
 	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.Name,
 		&i.Email,
 		&i.Password,
 		&i.Role,
+		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, email, password, role FROM users WHERE email = ?
+SELECT id, name, email, password, role, created_at FROM users WHERE email = ?
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
@@ -49,15 +60,17 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.Name,
 		&i.Email,
 		&i.Password,
 		&i.Role,
+		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, email, password, role FROM users ORDER BY email
+SELECT id, name, email, password, role, created_at FROM users ORDER BY name
 `
 
 func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
@@ -71,9 +84,11 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 		var i User
 		if err := rows.Scan(
 			&i.ID,
+			&i.Name,
 			&i.Email,
 			&i.Password,
 			&i.Role,
+			&i.CreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -89,10 +104,11 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 }
 
 const updateUser = `-- name: UpdateUser :one
-UPDATE users SET email = ?, password = ?, role = ? WHERE id = ? RETURNING id, email, password, role
+UPDATE users SET name = ?, email = ?, password = ?, role = ? WHERE id = ? RETURNING id, name, email, password, role, created_at
 `
 
 type UpdateUserParams struct {
+	Name     string
 	Email    string
 	Password string
 	Role     string
@@ -101,6 +117,7 @@ type UpdateUserParams struct {
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
 	row := q.db.QueryRowContext(ctx, updateUser,
+		arg.Name,
 		arg.Email,
 		arg.Password,
 		arg.Role,
@@ -109,9 +126,11 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.Name,
 		&i.Email,
 		&i.Password,
 		&i.Role,
+		&i.CreatedAt,
 	)
 	return i, err
 }
