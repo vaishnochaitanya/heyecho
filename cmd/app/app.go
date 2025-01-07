@@ -44,6 +44,9 @@ func Server() {
 	e.GET("/admin", handlers.HandleAdmin)
 	e.GET("/admin/users", handlers.HandleUsers)
 
+	// Admin APIs
+	e.GET("/api/admin/users", handlers.HandleAPIUsers)
+
 	httpAddr := os.Getenv("HTTP_ADDRESS")
 	slog.Info("Server started at 0.0.0.0" + httpAddr)
 	server := e.Start(httpAddr)
