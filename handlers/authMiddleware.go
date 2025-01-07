@@ -9,10 +9,9 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"vchan.in/heyecho/db"
-	"vchan.in/heyecho/types"
 )
 
-var role = types.Role
+var role string
 
 // Basic authentication middleware
 func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
