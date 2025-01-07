@@ -3,6 +3,7 @@ package seed
 import (
 	"context"
 	"log/slog"
+	"time"
 
 	"vchan.in/heyecho/db"
 )
@@ -11,9 +12,11 @@ func run() error {
 	ctx := context.Background()
 	// create an admin user
 	err := db.CallQueries.CreateUser(ctx, db.CreateUserParams{
-		Email:    "admin@example.com",
-		Password: "admin",
-		Role:     "admin",
+		Name:      "Admin",
+		Email:     "admin@example.com",
+		Password:  "admin",
+		Role:      "admin",
+		CreatedAt: time.Now(),
 	})
 	if err != nil {
 		slog.Warn("Admin user creation failed: Already exists")
