@@ -5,9 +5,10 @@ type ComponentOptions struct {
 	Role    string
 }
 
-// Define the context key type.
-type contextKey string
-
-// Create a context key for the theme.
-var RoleContextKey contextKey = "role"
-var Role string = "guest"
+type User struct {
+	Name           string
+	Email          string
+	Role           string
+	CreatedAt      string
+	GeneratedPhoto string
+}
