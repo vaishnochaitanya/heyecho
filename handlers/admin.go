@@ -49,7 +49,7 @@ func HandleUsers(c echo.Context) error {
 			UpdatedAt: u.UpdatedAt.Format("7 Jan 2006 10:36 AM"),
 			GeneratedPhoto: func() string {
 				firstLetter := rune(u.Name[0]) // Get first letter of the name and generate a letter avatar
-				img, err := letteravatar.Draw(100, firstLetter, nil)
+				img, err := letteravatar.Draw(40, firstLetter, nil)
 				if err != nil {
 					return ""
 				}
@@ -104,7 +104,7 @@ func HandleCreateUser(c echo.Context) error {
 	timeNow := time.Now().Format("7 Jan 2006 10:36 AM")
 	GeneratedPhoto := func() string {
 		firstLetter := rune(user.Name[0]) // Get first letter of the name and generate a letter avatar
-		img, err := letteravatar.Draw(100, firstLetter, nil)
+		img, err := letteravatar.Draw(40, firstLetter, nil)
 		if err != nil {
 			return ""
 		}

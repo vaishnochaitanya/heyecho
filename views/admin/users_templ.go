@@ -52,16 +52,29 @@ func Users(role string, users []types.User) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			for _, item := range users {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<tr class=\"bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600\"><th scope=\"row\" class=\"flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white\"><img class=\"w-10 h-10 rounded-full\" src=\"")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<tr class=\"bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600\"><input type=\"hidden\" name=\"uuid\" value=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var3 string
-				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(item.GeneratedPhoto)
+				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(item.Uuid)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/users.templ`, Line: 69, Col: 88}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/users.templ`, Line: 68, Col: 73}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><th scope=\"row\" class=\"flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white\"><img class=\"w-10 h-10 rounded-full\" src=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var4 string
+				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(item.GeneratedPhoto)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/users.templ`, Line: 70, Col: 88}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -69,12 +82,12 @@ func Users(role string, users []types.User) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var4 string
-				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(item.Name)
+				var templ_7745c5c3_Var5 string
+				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(item.Name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/users.templ`, Line: 71, Col: 89}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/users.templ`, Line: 72, Col: 89}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -82,12 +95,12 @@ func Users(role string, users []types.User) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var5 string
-				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(item.Email)
+				var templ_7745c5c3_Var6 string
+				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(item.Email)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/users.templ`, Line: 72, Col: 93}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/users.templ`, Line: 73, Col: 93}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -95,12 +108,12 @@ func Users(role string, users []types.User) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var6 string
-				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(item.Role)
+				var templ_7745c5c3_Var7 string
+				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(item.Role)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/users.templ`, Line: 76, Col: 38}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/users.templ`, Line: 77, Col: 38}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -108,16 +121,16 @@ func Users(role string, users []types.User) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var7 string
-				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(item.CreatedAt)
+				var templ_7745c5c3_Var8 string
+				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(item.CreatedAt)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/users.templ`, Line: 80, Col: 47}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/users.templ`, Line: 81, Col: 47}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></td><td class=\"px-6 py-4\"><!-- Modal toggle --><a href=\"#\" id=\"editUser\" type=\"button\" data-modal-target=\"userModal\" data-modal-show=\"userModal\" class=\"font-medium text-blue-600 dark:text-blue-500 hover:underline\">Edit user</a></td></tr>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></td><td class=\"px-6 py-4\"><!-- Modal toggle --><a href=\"#\" type=\"button\" data-modal-target=\"userModal\" data-modal-show=\"userModal\" class=\"font-medium text-blue-600 dark:text-blue-500 hover:underline\">Edit user</a></td></tr>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -130,7 +143,7 @@ func Users(role string, users []types.User) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4\"><div class=\"border-2 border-dashed border-gray-300 rounded-lg dark:border-gray-600 h-32 md:h-64\"></div><div class=\"border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64\"></div><div class=\"border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64\"></div><div class=\"border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64\"></div></div><script type=\"text/javascript\">\n    $(document).ready(function () {\n        var dTable = $('#users').DataTable({\n            \"dom\": 'rt',\n            \"pageLength\": 99999,\n        });\n\n        $('#table-search-users').keyup(function () {\n            dTable.search($(this).val()).draw();\n        });\n\n        // Function to generate custom pagination dynamically\n        function generateCustomPagination() {\n            var pageCount = dTable.page.info().pages;\n            var currentPage = dTable.page.info().page;\n            var paginationContainer = $('#custom-pagination');\n            var previousPage = \"flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white\"\n            var activePage = \"flex items-center justify-center px-4 h-10 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white\"\n            var inactivePage = \"flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white\"\n            var nextPage = \"flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white\"\n\n            // Clear existing pagination links\n            paginationContainer.empty();\n\n            // Previous button\n            var prevClass = currentPage === 0 ? previousPage : previousPage;\n            paginationContainer.append('<li href=\"#\"><a class=\"' + prevClass + '\" tabindex=\"-1\" aria-disabled=\"true\">Previous</a></li>');\n\n            // Page buttons\n            if (pageCount <= 5) {\n                // Display all pages if the total number is 5 or less\n                for (var i = 0; i < pageCount; i++) {\n                    var activeClass = i === currentPage ? activePage : inactivePage;\n                    paginationContainer.append('<li href=\"#\"><a class=\"' + activeClass + '\">' + (i + 1) + '</a></li>');\n                }\n            } else {\n                // Display first four pages\n                for (var i = 0; i < 4; i++) {\n                    var activeClass = i === currentPage ? activePage : inactivePage;\n                    paginationContainer.append('<li href=\"#\"><a class=\"' + activeClass + '\">' + (i + 1) + '</a></li>');\n                }\n\n                // Display ellipsis\n                paginationContainer.append('<li class=\"disabled\"><a class=\"flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white\">...</a></li>');\n\n                // Display last two pages\n                for (var i = pageCount - 2; i < pageCount; i++) {\n                    var activeClass = i === currentPage ? activePage : inactivePage;\n                    paginationContainer.append('<li href=\"#\"><a class=\"' + activeClass + '\">' + (i + 1) + '</a></li>');\n                }\n            }\n\n            // Next button\n            var nextClass = currentPage === pageCount - 1 ? nextPage : nextPage;\n            paginationContainer.append('<li href=\"#\"><a class=\"' + nextClass + '\">Next</a></li>');\n        }\n\n        // Initial pagination generation\n        generateCustomPagination();\n\n        // Redraw pagination on page change\n        dTable.on('draw', function () {\n            generateCustomPagination();\n            updateEntriesInfo();\n        });\n\n        // Handle pagination click\n        $('#custom-pagination').on('click', 'li:not(.disabled)', function () {\n            var index = $(this).index();\n            if ($(this).text() === 'Previous') {\n                dTable.page('previous').draw('page');\n            } else if ($(this).text() === 'Next') {\n                dTable.page('next').draw('page');\n            } else {\n                dTable.page(index - 1).draw('page');\n            }\n        });\n\n        // Function to update entries information\n        function updateEntriesInfo() {\n            var pageInfo = dTable.page.info();\n            $('#entries-info').html('Showing <span>' + (pageInfo.start + 1) + '</span> to <span>' + pageInfo.end + '</span> of <span>' + pageInfo.recordsTotal + '</span> entries');\n        }\n\n        // Initial entries information update\n        updateEntriesInfo();\n\n        // Edit user modal\n        $('#editUser').on('click', function () {\n            var row = $(this).closest('tr');\n            var name = row.find('#name').text();\n            var email = row.find('#email').text();\n            var role = row.find('#role').text();\n\n            $('#userModal').find('form').trigger('reset');                  // Reset form fields\n            $('#userModal').find('.text-xl').text('Edit user');             // Replace modal title\n            $('#userModal').find('button[type=\"submit\"]').text('Update');   // Replace Update button with Add button\n            $('#userModal').find('#password').removeAttr('required');       // Remove required attribute from password field\n\n            console.log(\"Role\", role);\n            $('#userModal').find('#name').val(name);\n            $('#userModal').find('#email').val(email);\n            if (role === 'admin') {\n                $('#userModal').find('#radio-role-admin').prop('checked', true);\n            } else {\n                $('#userModal').find('#radio-role-user').prop('checked', true);\n            }\n        });\n\n        // Add user modal\n        $('#addUser').on('click', function () {\n            $('#userModal').find('form').trigger('reset');                  // Reset form fields\n            $('#userModal').find('.text-xl').text('Add user');              // Replace Modal title   \n            $('#userModal').find('button[type=\"submit\"]').text('Add user'); // Replace Update button with Add button\n            $('#userModal').find('#password').attr('required', 'required'); // Add required attribute to password field\n            $('#userModal').find('#radio-role-user').prop('checked', true); // Default radio button to user role\n        });\n\n        // If close the userModel on submit\n        $('#userModal').on('submit', function () {\n            $('#userModal').modal('hide');\n        });\n\n    });\n</script>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4\"><div class=\"border-2 border-dashed border-gray-300 rounded-lg dark:border-gray-600 h-32 md:h-64\"></div><div class=\"border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64\"></div><div class=\"border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64\"></div><div class=\"border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64\"></div></div><script type=\"text/javascript\">\n    $(document).ready(function () {\n        var dTable = $('#users').DataTable({\n            \"dom\": 'rt',\n            \"pageLength\": 99999,\n        });\n\n        $('#table-search-users').keyup(function () {\n            dTable.search($(this).val()).draw();\n        });\n\n        // Function to generate custom pagination dynamically\n        function generateCustomPagination() {\n            var pageCount = dTable.page.info().pages;\n            var currentPage = dTable.page.info().page;\n            var paginationContainer = $('#custom-pagination');\n            var previousPage = \"flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white\"\n            var activePage = \"flex items-center justify-center px-4 h-10 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white\"\n            var inactivePage = \"flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white\"\n            var nextPage = \"flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white\"\n\n            // Clear existing pagination links\n            paginationContainer.empty();\n\n            // Previous button\n            var prevClass = currentPage === 0 ? previousPage : previousPage;\n            paginationContainer.append('<li href=\"#\"><a class=\"' + prevClass + '\" tabindex=\"-1\" aria-disabled=\"true\">Previous</a></li>');\n\n            // Page buttons\n            if (pageCount <= 5) {\n                // Display all pages if the total number is 5 or less\n                for (var i = 0; i < pageCount; i++) {\n                    var activeClass = i === currentPage ? activePage : inactivePage;\n                    paginationContainer.append('<li href=\"#\"><a class=\"' + activeClass + '\">' + (i + 1) + '</a></li>');\n                }\n            } else {\n                // Display first four pages\n                for (var i = 0; i < 4; i++) {\n                    var activeClass = i === currentPage ? activePage : inactivePage;\n                    paginationContainer.append('<li href=\"#\"><a class=\"' + activeClass + '\">' + (i + 1) + '</a></li>');\n                }\n\n                // Display ellipsis\n                paginationContainer.append('<li class=\"disabled\"><a class=\"flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white\">...</a></li>');\n\n                // Display last two pages\n                for (var i = pageCount - 2; i < pageCount; i++) {\n                    var activeClass = i === currentPage ? activePage : inactivePage;\n                    paginationContainer.append('<li href=\"#\"><a class=\"' + activeClass + '\">' + (i + 1) + '</a></li>');\n                }\n            }\n\n            // Next button\n            var nextClass = currentPage === pageCount - 1 ? nextPage : nextPage;\n            paginationContainer.append('<li href=\"#\"><a class=\"' + nextClass + '\">Next</a></li>');\n        }\n\n        // Initial pagination generation\n        generateCustomPagination();\n\n        // Redraw pagination on page change\n        dTable.on('draw', function () {\n            generateCustomPagination();\n            updateEntriesInfo();\n        });\n\n        // Handle pagination click\n        $('#custom-pagination').on('click', 'li:not(.disabled)', function () {\n            var index = $(this).index();\n            if ($(this).text() === 'Previous') {\n                dTable.page('previous').draw('page');\n            } else if ($(this).text() === 'Next') {\n                dTable.page('next').draw('page');\n            } else {\n                dTable.page(index - 1).draw('page');\n            }\n        });\n\n        // Function to update entries information\n        function updateEntriesInfo() {\n            var pageInfo = dTable.page.info();\n            $('#entries-info').html('Showing <span>' + (pageInfo.start + 1) + '</span> to <span>' + pageInfo.end + '</span> of <span>' + pageInfo.recordsTotal + '</span> entries');\n        }\n\n        // Initial entries information update\n        updateEntriesInfo();\n\n        // Edit user modal\n        $('a:contains(\"Edit user\")').on('click', function () {\n            var row = $(this).closest('tr');\n            var uuid = row.find('input[name=\"uuid\"]').val();\n            var name = row.find('#name').text();\n            var email = row.find('#email').text();\n            var role = row.find('#role').text();\n\n            $('#userModal').find('form').trigger('reset');                  // Reset form fields\n            $('#userModal').find('.text-xl').text('Edit user');             // Replace modal title\n            $('#userModal').find('button[type=\"submit\"]').text('Update');   // Replace Update button with Add button\n            $('#userModal').find('#password').removeAttr('required');       // Remove required attribute from password field\n\n            console.log(\"Role\", role);\n            $('#userModal').find('#name').val(name);\n            $('#userModal').find('#email').val(email);\n            if (role === 'admin') {\n                $('#userModal').find('#radio-role-admin').prop('checked', true);\n            } else {\n                $('#userModal').find('#radio-role-user').prop('checked', true);\n            }\n        });\n\n        // Add user modal\n        $('#addUser').on('click', function () {\n            $('#userModal').find('form').trigger('reset');                  // Reset form fields\n            $('#userModal').find('.text-xl').text('Add user');              // Replace Modal title   \n            $('#userModal').find('button[type=\"submit\"]').text('Add user'); // Replace Update button with Add button\n            $('#userModal').find('#password').attr('required', 'required'); // Add required attribute to password field\n            $('#userModal').find('#radio-role-user').prop('checked', true); // Default radio button to user role\n        });\n\n        // If close the userModel on submit\n        $('#userModal').on('submit', function () {\n            $('#userModal').modal('hide');\n        });\n\n    });\n</script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

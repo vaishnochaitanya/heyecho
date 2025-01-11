@@ -65,6 +65,7 @@ templ Users(role string, users []types.User) {
                 for _, item := range users {
                     <tr
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <input type="hidden" name="uuid" value={item.Uuid}>
                         <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                             <img class="w-10 h-10 rounded-full" src={item.GeneratedPhoto} alt="avatar">
                             <div class="ps-3">
@@ -82,7 +83,7 @@ templ Users(role string, users []types.User) {
                         </td>
                         <td class="px-6 py-4">
                             <!-- Modal toggle -->
-                            <a href="#" id="editUser" type="button"
+                            <a href="#" type="button"
                                 data-modal-target="userModal" data-modal-show="userModal"
                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit user</a>
                         </td>
@@ -199,8 +200,9 @@ templ Users(role string, users []types.User) {
         updateEntriesInfo();
 
         // Edit user modal
-        $('#editUser').on('click', function () {
+        $('a:contains("Edit user")').on('click', function () {
             var row = $(this).closest('tr');
+            var uuid = row.find('input[name="uuid"]').val();
             var name = row.find('#name').text();
             var email = row.find('#email').text();
             var role = row.find('#role').text();
