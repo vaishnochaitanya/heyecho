@@ -5,6 +5,12 @@ type ComponentOptions struct {
 	Role    string
 }
 
+// API response
+type Response struct {
+	Status  string
+	Message string
+}
+
 type User struct {
 	Uuid           string
 	Name           string
