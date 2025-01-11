@@ -36,10 +36,12 @@ func HandleUsers(c echo.Context) error {
 	users := []types.User{}
 	for _, u := range dbUsers {
 		users = append(users, types.User{
+			Uuid:      u.Uuid,
 			Name:      u.Name,
 			Email:     u.Email,
 			Role:      u.Role,
 			CreatedAt: u.CreatedAt.Format("7 Jan 2006 10:36 AM"),
+			UpdatedAt: u.UpdatedAt.Format("7 Jan 2006 10:36 AM"),
 			GeneratedPhoto: func() string {
 				img, err := letteravatar.Draw(100, 'A', nil)
 				if err != nil {
