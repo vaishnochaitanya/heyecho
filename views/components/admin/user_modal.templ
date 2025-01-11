@@ -5,7 +5,7 @@ templ UserModal() {
     class="fixed top-0 left-0 right-0 z-50 items-center justify-center hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full max-w-2xl max-h-full">
         <!-- Modal content -->
-        <form hx-post="/admin/users" hx-target="#users-list" hx-swap="beforebegin" hx-trigger="submit" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <form hx-put="/admin/users" hx-target="#users-list" hx-swap="beforebegin" hx-trigger="submit" class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <!-- Modal header -->
             <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
@@ -24,6 +24,7 @@ templ UserModal() {
             </div>
             <!-- Modal body -->
             <div class="p-6 space-y-6">
+                <input type="hidden" name="uuid" id="uuid">
                 <div class="mb-6">
                     <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
                     <input type="text" name="name" id="name"

@@ -85,7 +85,7 @@ templ Users(role string, users []types.User) {
                             <!-- Modal toggle -->
                             <a href="#" type="button"
                                 data-modal-target="userModal" data-modal-show="userModal"
-                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit user</a>
+                                class="edit-user font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit user</a>
                         </td>
                     </tr>
                 }
@@ -116,7 +116,7 @@ templ Users(role string, users []types.User) {
     $(document).ready(function () {
         var dTable = $('#users').DataTable({
             "dom": 'rt',
-            "pageLength": 99999,
+            "pageLength": 10,
         });
 
         $('#table-search-users').keyup(function () {
@@ -145,13 +145,13 @@ templ Users(role string, users []types.User) {
                 // Display all pages if the total number is 5 or less
                 for (var i = 0; i < pageCount; i++) {
                     var activeClass = i === currentPage ? activePage : inactivePage;
-                    paginationContainer.append('<li href="#"><a class="' + activeClass + '">' + (i + 1) + '</a></li>');
+                    paginationContainer.append('<li><a class="' + activeClass + '" data-page="' + i + '">' + (i + 1) + '</a></li>');
                 }
             } else {
                 // Display first four pages
                 for (var i = 0; i < 4; i++) {
                     var activeClass = i === currentPage ? activePage : inactivePage;
-                    paginationContainer.append('<li href="#"><a class="' + activeClass + '">' + (i + 1) + '</a></li>');
+                    paginationContainer.append('<li><a class="' + activeClass + '" data-page="' + i + '">' + (i + 1) + '</a></li>');
                 }
 
                 // Display ellipsis
@@ -160,7 +160,7 @@ templ Users(role string, users []types.User) {
                 // Display last two pages
                 for (var i = pageCount - 2; i < pageCount; i++) {
                     var activeClass = i === currentPage ? activePage : inactivePage;
-                    paginationContainer.append('<li href="#"><a class="' + activeClass + '">' + (i + 1) + '</a></li>');
+                    paginationContainer.append('<li><a class="' + activeClass + '" data-page="' + i + '">' + (i + 1) + '</a></li>');
                 }
             }
 
@@ -179,14 +179,15 @@ templ Users(role string, users []types.User) {
         });
 
         // Handle pagination click
-        $('#custom-pagination').on('click', 'li:not(.disabled)', function () {
-            var index = $(this).index();
-            if ($(this).text() === 'Previous') {
+        $('#custom-pagination').on('click', 'li', function () {
+            var text = $(this).text().trim();
+            if (text === 'Previous') {
                 dTable.page('previous').draw('page');
-            } else if ($(this).text() === 'Next') {
+            } else if (text === 'Next') {
                 dTable.page('next').draw('page');
             } else {
-                dTable.page(index - 1).draw('page');
+                var page = $(this).find('a').data('page');
+                dTable.page(page).draw('page');
             }
         });
 
@@ -199,8 +200,8 @@ templ Users(role string, users []types.User) {
         // Initial entries information update
         updateEntriesInfo();
 
-        // Edit user modal
-        $('a:contains("Edit user")').on('click', function () {
+        // Edit user modal using event delegation
+        $(document).on('click', '.edit-user', function () {
             var row = $(this).closest('tr');
             var uuid = row.find('input[name="uuid"]').val();
             var name = row.find('#name').text();
@@ -212,7 +213,7 @@ templ Users(role string, users []types.User) {
             $('#userModal').find('button[type="submit"]').text('Update');   // Replace Update button with Add button
             $('#userModal').find('#password').removeAttr('required');       // Remove required attribute from password field
 
-            console.log("Role", role);
+            $('#userModal').find('#uuid').val(uuid);
             $('#userModal').find('#name').val(name);
             $('#userModal').find('#email').val(email);
             if (role === 'admin') {
@@ -229,11 +230,6 @@ templ Users(role string, users []types.User) {
             $('#userModal').find('button[type="submit"]').text('Add user'); // Replace Update button with Add button
             $('#userModal').find('#password').attr('required', 'required'); // Add required attribute to password field
             $('#userModal').find('#radio-role-user').prop('checked', true); // Default radio button to user role
-        });
-
-        // If close the userModel on submit
-        $('#userModal').on('submit', function () {
-            $('#userModal').modal('hide');
         });
 
     });
