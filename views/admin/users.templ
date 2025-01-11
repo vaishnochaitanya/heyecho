@@ -32,8 +32,7 @@ templ Users(role string, users []types.User) {
                     placeholder="Search for users">
             </div>
             <div>
-                <a type="button" href="#" id="addUserModal" type="button" data-modal-target="addUserModal"
-                data-modal-show="addUserModal"
+                <a type="button" href="#" id="addUser" data-modal-target="userModal" data-modal-show="userModal"
                     class="px-5 py-2.5 text-sm font-medium text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     <svg class="w-3.5 h-3.5 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                         width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -64,30 +63,30 @@ templ Users(role string, users []types.User) {
             </thead>
             <tbody>
                 for _, item := range users {
-                <tr
-                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                        <img class="w-10 h-10 rounded-full" src={item.GeneratedPhoto} alt="avatar">
-                        <div class="ps-3">
-                            <div class="text-base font-semibold">{item.Name}</div>
-                            <div class="font-normal text-gray-500">{item.Email}</div>
-                        </div>
-                    </th>
-                    <td class="px-6 py-4">
-                        {item.Role}
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center">
-                            {item.CreatedAt}
-                        </div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <!-- Modal toggle -->
-                        <a href="#" id="user{item.ID}" type="button" data-modal-target="editUserModal"
-                            data-modal-show="editUserModal"
-                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit user</a>
-                    </td>
-                </tr>
+                    <tr
+                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                            <img class="w-10 h-10 rounded-full" src={item.GeneratedPhoto} alt="avatar">
+                            <div class="ps-3">
+                                <div id="name" class="text-base font-semibold">{item.Name}</div>
+                                <div id="email" class="font-normal text-gray-500">{item.Email}</div>
+                            </div>
+                        </th>
+                        <td id="role" class="px-6 py-4">
+                            {item.Role}
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center">
+                                {item.CreatedAt}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <!-- Modal toggle -->
+                            <a href="#" id="editUser" type="button"
+                                data-modal-target="userModal" data-modal-show="userModal"
+                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit user</a>
+                        </td>
+                    </tr>
                 }
             </tbody>
         </table>
@@ -101,9 +100,7 @@ templ Users(role string, users []types.User) {
             </nav>
         </div>
         <!-- Edit user modal -->
-        @components.EditUserModal("a", "b", "c", "d", true)
-        <!-- Add user modal -->
-        @components.AddUserModal("a", "b", "c", "d", true)
+        @components.UserModal()
     </div>
 </div>
 
@@ -200,6 +197,35 @@ templ Users(role string, users []types.User) {
 
         // Initial entries information update
         updateEntriesInfo();
+
+        // Edit user modal
+        $('#editUser').on('click', function () {
+            var row = $(this).closest('tr');
+            var name = row.find('#name').text();
+            var email = row.find('#email').text();
+            var role = row.find('#role').text();
+
+            $('#userModal').find('.text-xl').text('Edit user'); // Replace modal title
+            $('#userModal').find('button[type="submit"]').text('Update');   // Replace Update button with Add button
+            $('#userModal').find('#password').removeAttr('required');   // Remove required attribute from password field
+
+            $('#userModal').find('#name').val(name);
+            $('#userModal').find('#email').val(email);
+            if (role === 'admin') {
+                $('#userModal').find('#radio-role-admin').prop('checked', true);
+            } else {
+                $('#userModal').find('#radio-role-user').prop('checked', true);
+            }
+        });
+
+        // Add user modal
+        $('#addUser').on('click', function () {
+            $('#userModal').find('form').trigger('reset');                  //Reset form fields
+            $('#userModal').find('.text-xl').text('Add user');              //Replace Modal title   
+            $('#userModal').find('button[type="submit"]').text('Add user'); //Replace Update button with Add button
+            $('#userModal').find('#password').attr('required', 'required'); //Add required attribute to password field
+            $('#userModal').find('#radio-role-user').prop('checked', true); //Default radio button to user role
+        });
     });
 </script>
 
