@@ -5,10 +5,10 @@ SELECT * FROM users WHERE email = ?;
 SELECT * FROM users ORDER BY name;
 
 -- name: CreateUser :exec
-INSERT INTO users (name, email, password, role, created_at) VALUES (?, ?, ?, ?, ?);
+INSERT INTO users (uuid, name, email, password, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?);
 
 -- name: UpdateUser :one
-UPDATE users SET name = ?, email = ?, password = ?, role = ? WHERE id = ? RETURNING *;
+UPDATE users SET name = ?, email = ?, password = ?, role = ?, updated_at = ? WHERE uuid = ? RETURNING *;
 
 -- name: DeleteUser :one
-DELETE FROM users WHERE email = ? RETURNING *;
+DELETE FROM users WHERE uuid = ? RETURNING *;
