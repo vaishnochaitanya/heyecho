@@ -37,7 +37,7 @@ templ Users(role string, users []types.User) {
                     <svg class="w-3.5 h-3.5 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                         width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                         <path fill-rule="evenodd"
-                            d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13V7.757Z"
+                            d="M2 12C2 6.477 6.477 6 12 6s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4.243a1 1 0 1 0-2 0V11H7.757a1 1 0 1 0 0 2H11v3.243a1 1 0 1 0 2 0V13h3.243a1 1 0 1 0 0-2H13V7.757Z"
                             clip-rule="evenodd" />
                     </svg>
                     Add User
@@ -117,6 +117,33 @@ templ Users(role string, users []types.User) {
         var dTable = $('#users').DataTable({
             "dom": 'rt',
             "pageLength": 10,
+            drawCallback: function() {
+                $(this.api().rows().nodes()).find('.edit-user').off('click').on('click', function(e) {
+                    e.preventDefault();
+                    var row = $(this).closest('tr');
+                    var uuid = row.find('input[name="uuid"]').val();
+                    var name = row.find('#name').text();
+                    var email = row.find('#email').text();
+                    var role = row.find('#role').text();
+
+                    $('#userModal').find('form').trigger('reset');
+                    $('#userModal').find('.text-xl').text('Edit user');
+                    $('#userModal').find('button[type="submit"]').text('Update');
+                    $('#userModal').find('#password').removeAttr('required');
+                    $('#userModal').find('#uuid').val(uuid);
+                    $('#userModal').find('#name').val(name);
+                    $('#userModal').find('#email').val(email);
+                    if (role === 'admin') {
+                        $('#userModal').find('#radio-role-admin').prop('checked', true);
+                    } else {
+                        $('#userModal').find('#radio-role-user').prop('checked', true);
+                    }
+
+                    // Force Flowbite to open the modal, ignoring default data-modal attributes
+                    const modal = new Modal(document.getElementById('userModal'));
+                    modal.show();
+                });
+            }
         });
 
         $('#table-search-users').keyup(function () {
@@ -200,29 +227,6 @@ templ Users(role string, users []types.User) {
         // Initial entries information update
         updateEntriesInfo();
 
-        // Edit user modal using event delegation
-        $(document).on('click', '.edit-user', function () {
-            var row = $(this).closest('tr');
-            var uuid = row.find('input[name="uuid"]').val();
-            var name = row.find('#name').text();
-            var email = row.find('#email').text();
-            var role = row.find('#role').text();
-
-            $('#userModal').find('form').trigger('reset');                  // Reset form fields
-            $('#userModal').find('.text-xl').text('Edit user');             // Replace modal title
-            $('#userModal').find('button[type="submit"]').text('Update');   // Replace Update button with Add button
-            $('#userModal').find('#password').removeAttr('required');       // Remove required attribute from password field
-
-            $('#userModal').find('#uuid').val(uuid);
-            $('#userModal').find('#name').val(name);
-            $('#userModal').find('#email').val(email);
-            if (role === 'admin') {
-                $('#userModal').find('#radio-role-admin').prop('checked', true);
-            } else {
-                $('#userModal').find('#radio-role-user').prop('checked', true);
-            }
-        });
-
         // Add user modal
         $('#addUser').on('click', function () {
             $('#userModal').find('form').trigger('reset');                  // Reset form fields
@@ -232,6 +236,32 @@ templ Users(role string, users []types.User) {
             $('#userModal').find('#radio-role-user').prop('checked', true); // Default radio button to user role
         });
 
+        // Close button fix
+        $('#user-modal-hide').off('click').on('click', function(e) {
+            e.preventDefault();
+            const modal = new Modal(document.getElementById('userModal'));
+            modal.hide();
+        });
+
+        // dont close modal on outside click
+        $('#userModal').on('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // close modal on escape key
+        $(document).on('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = new Modal(document.getElementById('userModal'));
+                modal.hide();
+            }
+        });
+
+        // close modal on submit
+        $('#userModal').on('submit', function(e) {
+            e.preventDefault();
+            const modal = new Modal(document.getElementById('userModal'));
+            modal.hide();
+        });
     });
 </script>
 

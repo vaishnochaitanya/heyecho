@@ -171,30 +171,24 @@ func HandleUpdateUser(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, types.Response{Status: "error", Message: err.Error()})
 	}
-	timeNow := time.Now().Format("7 Jan 2006 10:36 AM")
 	responseHTML := `<tr
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                            <img class="w-10 h-10 rounded-full" src=` + generatedPhoto(user.Name) + ` alt="avatar">
-                            <div class="ps-3">
-                                <div id="name" class="text-base font-semibold">` + user.Name + `</div>
-                                <div id="email" class="font-normal text-gray-500">` + user.Email + `</div>
-                            </div>
-                        </th>
-                        <td id="role" class="px-6 py-4">
-                            ` + user.Role + `
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center">
-                                ` + timeNow + `
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <!-- Modal toggle -->
-                            <a href="#" id="editUser" type="button"
-                                data-modal-target="userModal" data-modal-show="userModal"
-                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit user</a>
-                        </td>
+						<td colspan="4" class="px-6 py-4 text-center">
+							<div class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
+								<svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+									<path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+								</svg>
+								<span class="sr-only">Info</span>
+								<div>
+									<span class="font-medium">Success!</span> User updated successfully. Reloading...
+								</div>
+							</div>
+							<script>
+								setTimeout(function() {
+									location.reload();
+								}, 2000);
+							</script>
+						</td>
                     </tr>`
 	return c.HTML(http.StatusOK, responseHTML)
 }
