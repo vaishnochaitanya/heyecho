@@ -3,25 +3,35 @@ package seed
 import (
 	"context"
 	"log/slog"
+	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"vchan.in/heyecho/db"
 )
 
 func run() error {
 	ctx := context.Background()
 	// create an admin user
+	var UserUuid = strings.ReplaceAll(uuid.New().String(), "-", "")
+	var UserName = "Admin"
+	var UserEmail = "admin@example.com"
+	var UserPassword = "admin"
+	var UserRole = "admin"
+
 	err := db.CallQueries.CreateUser(ctx, db.CreateUserParams{
-		Name:      "Admin",
-		Email:     "admin@example.com",
-		Password:  "admin",
-		Role:      "admin",
+		Uuid:      UserUuid,
+		Name:      UserName,
+		Email:     UserEmail,
+		Password:  UserPassword,
+		Role:      UserRole,
 		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	})
 	if err != nil {
 		slog.Warn("Admin user creation failed: Already exists")
 	} else {
-		slog.Info("Admin user created with email: admin@example.com and password: admin")
+		slog.Info("Admin user created with email: " + UserEmail + " and password: " + UserPassword)
 	}
 
 	return nil
