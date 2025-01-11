@@ -1,1 +1,1 @@
-* Admin -> User -> Add users button wont display the modal
+* Admin -> User -> Edit form UX issues.
