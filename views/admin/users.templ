@@ -129,6 +129,7 @@ templ Users(role string, users []types.User) {
                     $('#userModal').find('form').trigger('reset');
                     $('#userModal').find('.text-xl').text('Edit user');
                     $('#userModal').find('button[type="submit"]').text('Update');
+                    $('#userModal').find('label[for="password"]').text('New Password');
                     $('#userModal').find('#password').removeAttr('required');
                     $('#userModal').find('#uuid').val(uuid);
                     $('#userModal').find('#name').val(name);
@@ -142,6 +143,16 @@ templ Users(role string, users []types.User) {
                     // Force Flowbite to open the modal, ignoring default data-modal attributes
                     const modal = new Modal(document.getElementById('userModal'));
                     modal.show();
+
+                    $('#userModal').find('#user-modal-hide').on('click', function() {
+                        modal.hide();
+                    });
+
+                    $('#userModal').on('submit', function(e) {
+                        e.preventDefault();
+                        modal.hide();
+                    });
+
                 });
             }
         });
@@ -236,17 +247,7 @@ templ Users(role string, users []types.User) {
             $('#userModal').find('#radio-role-user').prop('checked', true); // Default radio button to user role
         });
 
-        // Close button fix
-        $('#user-modal-hide').off('click').on('click', function(e) {
-            e.preventDefault();
-            const modal = new Modal(document.getElementById('userModal'));
-            modal.hide();
-        });
 
-        // dont close modal on outside click
-        $('#userModal').on('click', function(e) {
-            e.stopPropagation();
-        });
 
         // close modal on escape key
         $(document).on('keydown', function(e) {
@@ -256,12 +257,12 @@ templ Users(role string, users []types.User) {
             }
         });
 
-        // close modal on submit
-        $('#userModal').on('submit', function(e) {
-            e.preventDefault();
-            const modal = new Modal(document.getElementById('userModal'));
-            modal.hide();
-        });
+        // // close modal on submit
+        // $('#userModal').on('submit', function(e) {
+        //     e.preventDefault();
+        //     const modal = new Modal(document.getElementById('userModal'));
+        //     modal.hide();
+        // });
     });
 </script>
 
