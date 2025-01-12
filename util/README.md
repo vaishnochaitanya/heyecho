@@ -1,1 +1,0 @@
-For common simple helper functions
