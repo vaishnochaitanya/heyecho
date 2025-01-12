@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"vchan.in/heyecho/db"
+	"vchan.in/heyecho/utils"
 )
 
 func run() error {
@@ -16,7 +17,7 @@ func run() error {
 	var UserUuid = strings.ReplaceAll(uuid.New().String(), "-", "")
 	var UserName = "Admin"
 	var UserEmail = "admin@example.com"
-	var UserPassword = "admin"
+	var UserPassword, _ = utils.HashPassword("admin")
 	var UserRole = "admin"
 
 	err := db.CallQueries.CreateUser(ctx, db.CreateUserParams{
