@@ -34,16 +34,6 @@ func HandleLogin(c echo.Context) error {
 			return c.Redirect(http.StatusFound, "/login")
 		}
 
-		slog.Info("User email: " + dbuser.Email + " Password: " + dbuser.Password + " Hashed Password: " + hashedPassword)
-
-		hashedPassword, err = utils.HashPassword(password)
-		if err != nil {
-			slog.Error(err.Error())
-			return c.Redirect(http.StatusFound, "/login")
-		}
-
-		slog.Info("User email: " + dbuser.Email + " Password: " + dbuser.Password + " Hashed Password: " + hashedPassword)
-
 		// Check if the user email has a valid password
 		if dbuser.Email != email && dbuser.Password != hashedPassword {
 			slog.Info(email + " failed to login")
@@ -53,7 +43,7 @@ func HandleLogin(c echo.Context) error {
 		// Check if the provided credentials are valid
 		if subtle.ConstantTimeCompare([]byte(hashedPassword), []byte(dbuser.Password)) == 1 {
 			// If authentication is successful, call the next handler
-			c.Response().Header().Set("Set-Cookie", "token="+basicAuth(email, password)+"; Path=/")
+			c.Response().Header().Set("Set-Cookie", "token="+basicAuth(email, hashedPassword)+"; Path=/")
 			slog.Info(email + " logged in")
 			return c.Redirect(http.StatusFound, "/")
 		}
