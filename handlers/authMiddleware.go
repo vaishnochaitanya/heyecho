@@ -9,7 +9,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"vchan.in/heyecho/db"
-	"vchan.in/heyecho/utils"
 )
 
 var role string
@@ -46,20 +45,14 @@ func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			return c.Redirect(http.StatusFound, "/login")
 		}
 
-		hashedPassword, err := utils.HashPassword(password)
-		if err != nil {
-			slog.Error(err.Error())
-			return c.Redirect(http.StatusFound, "/login")
-		}
-
 		// Check if the user email has a valid password
-		if dbuser.Email != email && dbuser.Password != hashedPassword {
+		if dbuser.Email != email && dbuser.Password != password {
 			slog.Info(email + " failed to login")
 			return c.Redirect(http.StatusFound, "/login")
 		}
 
 		// Check if the provided credentials are valid
-		if subtle.ConstantTimeCompare([]byte(hashedPassword), []byte(dbuser.Password)) == 1 {
+		if subtle.ConstantTimeCompare([]byte(password), []byte(dbuser.Password)) == 1 {
 			// If authentication is successful, set the role
 			if email == "admin@example.com" {
 				role = "admin"

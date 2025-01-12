@@ -16,6 +16,7 @@ func AppEnv() string {
 }
 
 func HashPassword(password string) (string, error) {
-	bytes := sha256.Sum256([]byte(password))
-	return string(bytes[:]), nil
+	hash := sha256.New()
+	hash.Write([]byte(password))
+	return string(hash.Sum(nil)), nil
 }
