@@ -9,6 +9,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"vchan.in/heyecho/db"
+	"vchan.in/heyecho/utils"
 )
 
 var role string
@@ -39,19 +40,26 @@ func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		email, password, _ := strings.Cut(credentials, ":")
 
 		// Check if the user email exists
-		user, err := db.CallQueries.GetUserByEmail(c.Request().Context(), email)
+		dbuser, err := db.CallQueries.GetUserByEmail(c.Request().Context(), email)
 		if err != nil {
 			// If the user does not exist, redirect to the login page
 			return c.Redirect(http.StatusFound, "/login")
 		}
+
+		hashedPassword, err := utils.HashPassword(password)
+		if err != nil {
+			slog.Error(err.Error())
+			return c.Redirect(http.StatusFound, "/login")
+		}
+
 		// Check if the user email has a valid password
-		if user.Email != email && user.Password != password {
+		if dbuser.Email != email && dbuser.Password != hashedPassword {
 			slog.Info(email + " failed to login")
 			return c.Redirect(http.StatusFound, "/login")
 		}
 
 		// Check if the provided credentials are valid
-		if subtle.ConstantTimeCompare([]byte(password), []byte(user.Password)) == 1 {
+		if subtle.ConstantTimeCompare([]byte(hashedPassword), []byte(dbuser.Password)) == 1 {
 			// If authentication is successful, set the role
 			if email == "admin@example.com" {
 				role = "admin"
@@ -63,6 +71,7 @@ func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		// If authentication fails, set the role to guest
+		c.Set("role", "guest")
 		return next(c)
 	}
 }

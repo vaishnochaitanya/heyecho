@@ -15,6 +15,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"vchan.in/heyecho/db"
 	"vchan.in/heyecho/types"
+	"vchan.in/heyecho/utils"
 	"vchan.in/heyecho/views/admin"
 )
 
@@ -90,12 +91,14 @@ func HandleCreateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Name, Email, Password and Role are required")
 	}
 
+	hashedPassword, err := utils.HashPassword(user.Password)
+
 	ctx := context.Background()
-	err := db.CallQueries.CreateUser(ctx, db.CreateUserParams{
+	err = db.CallQueries.CreateUser(ctx, db.CreateUserParams{
 		Uuid:      strings.ReplaceAll(uuid.New().String(), "-", ""),
 		Name:      user.Name,
 		Email:     user.Email,
-		Password:  user.Password,
+		Password:  hashedPassword,
 		Role:      user.Role,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
@@ -135,13 +138,15 @@ func HandleCreateUser(c echo.Context) error {
 // Update a user	PUT /admin/users
 func HandleUpdateUser(c echo.Context) error {
 	var user struct {
-		Uuid  string `json:"uuid" form:"uuid"`
-		Name  string `json:"name" form:"name"`
-		Email string `json:"email" form:"email"`
-		Role  string `json:"role" form:"role"`
+		Uuid     string `json:"uuid" form:"uuid"`
+		Name     string `json:"name" form:"name"`
+		Email    string `json:"email" form:"email"`
+		Password string `json:"password" form:"password"`
+		Role     string `json:"role" form:"role"`
 	}
+	user.Password = "123456@temp!" // Default password
 	if err := c.Bind(&user); err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
+		return c.JSON(http.StatusBadRequest, types.Response{Status: "error", Message: err.Error()})
 	}
 
 	// Only if the current user role is admin
@@ -150,14 +155,32 @@ func HandleUpdateUser(c echo.Context) error {
 		return c.JSON(http.StatusForbidden, types.Response{Status: "error", Message: "Forbidden"})
 	}
 
+	if user.Uuid == "" || user.Name == "" || user.Email == "" || user.Role == "" {
+		return c.JSON(http.StatusBadRequest, types.Response{Status: "error", Message: "Uuid, Name, Email, and Role are required"})
+	}
+
 	ctx := context.Background()
 	// Check if the user exists
 	dbUser, err := db.CallQueries.GetUserByEmail(ctx, user.Email)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
+		return c.JSON(http.StatusInternalServerError, types.Response{Status: "error", Message: err.Error()})
 	}
 	if dbUser.Uuid == "" {
 		return c.JSON(http.StatusNotFound, types.Response{Status: "error", Message: "User not found"})
+	}
+
+	hashedPassword, err := utils.HashPassword(user.Password)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, types.Response{Status: "error", Message: err.Error()})
+	}
+
+	if user.Password == "123456@temp!" {
+		hashedPassword = dbUser.Password // Keep the old password
+	} else {
+		hashedPassword, err = utils.HashPassword(user.Password)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, types.Response{Status: "error", Message: err.Error()})
+		}
 	}
 
 	// Update the user
@@ -165,6 +188,7 @@ func HandleUpdateUser(c echo.Context) error {
 		Uuid:      user.Uuid,
 		Name:      user.Name,
 		Email:     user.Email,
+		Password:  hashedPassword,
 		Role:      user.Role,
 		UpdatedAt: time.Now(),
 	})
@@ -174,7 +198,7 @@ func HandleUpdateUser(c echo.Context) error {
 	responseHTML := `<tr
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
 						<td colspan="4" class="px-6 py-4 text-center">
-							<div class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
+							<div class="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
 								<svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
 									<path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
 								</svg>
