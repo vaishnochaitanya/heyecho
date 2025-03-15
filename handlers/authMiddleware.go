@@ -55,11 +55,6 @@ func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			c.Set("role", role)
 			return next(c)
 		}
-
-		// If authentication fails, set the role to guest
-		slog.Debug("Authentication failed", "email", email)
-		c.Set("role", "guest")
-		return next(c)
 	}
 }
 
