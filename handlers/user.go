@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"crypto/subtle"
 	"encoding/base64"
 	"log/slog"
 	"net/http"
@@ -19,7 +18,9 @@ func HandleLogin(c echo.Context) error {
 		email := c.FormValue("email")
 		password := c.FormValue("password")
 
-		// Check if the user email exists
+		slog.Info("Login attempt", "email", email)
+
+		// Get user by email only
 		dbuser, err := db.CallQueries.GetUserByEmail(c.Request().Context(), email)
 		if err != nil {
 			// If the user does not exist, send an error message to frontend
@@ -28,24 +29,24 @@ func HandleLogin(c echo.Context) error {
 			return c.Redirect(http.StatusFound, "/login?level="+color+"&alert="+alert)
 		}
 
-		hashedPassword, err := utils.HashPassword(password)
-		if err != nil {
-			slog.Error(err.Error())
-			return c.Redirect(http.StatusFound, "/login")
-		}
+		// Verify the password against the stored hash
+		if utils.VerifyPasswordHash(password, dbuser.Password) {
+			// If authentication is successful, set the cookie
+			token := basicAuth(email, dbuser.Password)
+			c.Response().Header().Set("Set-Cookie", "token="+token+"; Path=/")
+			slog.Info("Login successful", "for email", email)
 
-		// Check if the user email has a valid password
-		if dbuser.Email != email && dbuser.Password != hashedPassword {
-			slog.Info(email + " failed to login")
-			return c.Redirect(http.StatusFound, "/login")
-		}
+			// Set the user role for the session
+			role = dbuser.Role
+			c.Set("role", role)
 
-		// Check if the provided credentials are valid
-		if subtle.ConstantTimeCompare([]byte(hashedPassword), []byte(dbuser.Password)) == 1 {
-			// If authentication is successful, call the next handler
-			c.Response().Header().Set("Set-Cookie", "token="+basicAuth(email, hashedPassword)+"; Path=/")
-			slog.Info(email + " logged in")
 			return c.Redirect(http.StatusFound, "/")
+		} else {
+			// Password doesn't match
+			slog.Info("Login failed - incorrect password", "for email", email) 
+			color := "error"
+			alert := "Incorrect email or password"
+			return c.Redirect(http.StatusFound, "/login?level="+color+"&alert="+alert)
 		}
 	}
 	return render(c, login.Login(role))
