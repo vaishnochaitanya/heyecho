@@ -28,7 +28,7 @@ func (h *SimpleHandler) Enabled(_ context.Context, level slog.Level) bool {
 func (h *SimpleHandler) Handle(_ context.Context, r slog.Record) error {
 	timeStr := r.Time.Format("2006/01/02 15:04:05")
 
-	fmt.Fprintf(h.w, "%s %s", timeStr, r.Message)
+	fmt.Fprintf(h.w, "[%s] %s: %s", timeStr, r.Level, r.Message)
 
 	// Add any additional attributes
 	r.Attrs(func(a slog.Attr) bool {
