@@ -28,3 +28,6 @@ go.work.sum
 
 # Database
 *.db
+
+# Debug
+__debug_bin*
