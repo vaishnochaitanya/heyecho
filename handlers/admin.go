@@ -19,6 +19,8 @@ import (
 	"vchan.in/heyecho/views/admin"
 )
 
+const dateFormat = "7 Jan 2006 10:36 AM"
+
 func generatedPhoto(name string) string {
 	firstLetter := rune(name[0]) // Get first letter of the name and generate a letter avatar
 	img, err := letteravatar.Draw(40, firstLetter, nil)
@@ -57,10 +59,8 @@ func HandleUsers(c echo.Context) error {
 		users = append(users, types.User{
 			Uuid:           u.Uuid,
 			Name:           u.Name,
-			Email:          u.Email,
-			Role:           u.Role,
-			CreatedAt:      u.CreatedAt.Format("7 Jan 2006 10:36 AM"),
-			UpdatedAt:      u.UpdatedAt.Format("7 Jan 2006 10:36 AM"),
+			CreatedAt:      u.CreatedAt.Format(dateFormat),
+			UpdatedAt:      u.UpdatedAt.Format(dateFormat),
 			GeneratedPhoto: generatedPhoto(u.Name),
 		})
 	}
@@ -85,17 +85,33 @@ func HandleCreateUser(c echo.Context) error {
 		return c.JSON(http.StatusForbidden, "Forbidden")
 	}
 
-	slog.Info("Creating user: ", user)
+	slog.Info("Creating user: ", slog.Any("user", user))
 
 	if user.Name == "" || user.Email == "" || user.Password == "" || user.Role == "" {
 		return c.JSON(http.StatusBadRequest, "Name, Email, Password and Role are required")
 	}
 
-	hashedPassword, err := utils.HashPassword(user.Password)
-
 	ctx := context.Background()
+
+	// Check if the user exists
+	dbUser, err := db.CallQueries.GetUserByEmail(ctx, user.Email)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	if dbUser.Uuid != "" {
+		return c.JSON(http.StatusConflict, "User already exists")
+	}
+
+	// Create the user
+	hashedPassword, err := utils.HashPassword(user.Password)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	uniqueId := strings.ReplaceAll(uuid.New().String(), "-", "")
+
 	err = db.CallQueries.CreateUser(ctx, db.CreateUserParams{
-		Uuid:      strings.ReplaceAll(uuid.New().String(), "-", ""),
+		Uuid:      uniqueId,
 		Name:      user.Name,
 		Email:     user.Email,
 		Password:  hashedPassword,
@@ -103,10 +119,7 @@ func HandleCreateUser(c echo.Context) error {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	timeNow := time.Now().Format("7 Jan 2006 10:36 AM")
+	timeNow := time.Now().Format(dateFormat)
 	GeneratedPhoto := generatedPhoto(user.Name)
 	responseHTML := `<tr
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
