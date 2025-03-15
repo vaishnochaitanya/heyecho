@@ -15,13 +15,13 @@ import (
 func HandleLogin(c echo.Context) error {
 	if c.Request().Method == "POST" {
 		// Handle the login form submission
-		email := c.FormValue("email")
-		password := c.FormValue("password")
+		requestEmail := c.FormValue("email")
+		requestPassword := c.FormValue("password")
 
-		slog.Info("Login attempt", "email", email)
+		slog.Info("Login attempt", "email", requestEmail)
 
 		// Get user by email only
-		dbuser, err := db.CallQueries.GetUserByEmail(c.Request().Context(), email)
+		dbuser, err := db.CallQueries.GetUserByEmail(c.Request().Context(), requestEmail)
 		if err != nil {
 			// If the user does not exist, send an error message to frontend
 			color := "error"
@@ -30,11 +30,11 @@ func HandleLogin(c echo.Context) error {
 		}
 
 		// Verify the password against the stored hash
-		if utils.VerifyPasswordHash(password, dbuser.Password) {
+		if utils.VerifyPasswordHash(dbuser.Password, requestPassword) {
 			// If authentication is successful, set the cookie
-			token := basicAuth(email, dbuser.Password)
+			token := basicAuth(requestEmail, dbuser.Password)
 			c.Response().Header().Set("Set-Cookie", "token="+token+"; Path=/")
-			slog.Info("Login successful", "for email", email)
+			slog.Info("Login successful", "for email", requestEmail)
 
 			// Set the user role for the session
 			role = dbuser.Role
@@ -43,7 +43,7 @@ func HandleLogin(c echo.Context) error {
 			return c.Redirect(http.StatusFound, "/")
 		} else {
 			// Password doesn't match
-			slog.Info("Login failed - incorrect password", "for email", email) 
+			slog.Info("Login failed - incorrect password", "for email", requestEmail)
 			color := "error"
 			alert := "Incorrect email or password"
 			return c.Redirect(http.StatusFound, "/login?level="+color+"&alert="+alert)
