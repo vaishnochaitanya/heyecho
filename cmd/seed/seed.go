@@ -3,16 +3,24 @@ package seed
 import (
 	"context"
 	"log/slog"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/google/uuid"
 	"vchan.in/heyecho/db"
+	"vchan.in/heyecho/logger"
 	"vchan.in/heyecho/utils"
 )
 
 func run() error {
 	ctx := context.Background()
+
+	// Custom logger
+	level := slog.LevelInfo // default level
+	slogger := slog.New(logger.NewSimpleHandler(os.Stdout, level))
+	slog.SetDefault(slogger)
+
 	// create an admin user
 	var UserUuid = strings.ReplaceAll(uuid.New().String(), "-", "")
 	var UserName = "Admin"
