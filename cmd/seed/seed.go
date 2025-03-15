@@ -25,8 +25,8 @@ func run() error {
 	var UserUuid = strings.ReplaceAll(uuid.New().String(), "-", "")
 	var UserName = "Admin"
 	var UserEmail = "admin@example.com"
-	var generatedPassphrase = utils.GeneratePassphrase
-	var UserPassword, _ = utils.HashPassword(generatedPassphrase())
+	var generatedPassphrase = utils.GeneratePassphrase()
+	var UserPassword, _ = utils.HashPassword(generatedPassphrase)
 	var UserRole = "admin"
 
 	err := db.CallQueries.CreateUser(ctx, db.CreateUserParams{
@@ -41,7 +41,7 @@ func run() error {
 	if err != nil {
 		slog.Warn("Admin user creation failed: Already exists")
 	} else {
-		slog.Info("Admin user created with email: " + UserEmail + " and generated password: " + generatedPassphrase())
+		slog.Info("Admin user created with email: " + UserEmail + " and generated password: " + generatedPassphrase)
 	}
 
 	return nil
