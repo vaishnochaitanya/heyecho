@@ -247,8 +247,10 @@ templ Users(role string, users []types.User) {
         // close modal on escape key
         $(document).on('keydown', function(e) {
             if (e.key === 'Escape') {
-                const modal = new Modal(document.getElementById('userModal'));
-                modal.hide();
+                const modalAdd = new Modal(document.getElementById('userModalAdd'));
+                const modalUpdate = new Modal(document.getElementById('userModalUpdate'));
+                modalAdd.hide();
+                modalUpdate.hide();
             }
         });
     });
