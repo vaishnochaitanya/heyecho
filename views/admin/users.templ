@@ -32,7 +32,7 @@ templ Users(role string, users []types.User) {
                     placeholder="Search for users">
             </div>
             <div>
-                <a type="button" href="#" id="addUser" data-modal-target="userModal" data-modal-show="userModal"
+                <a type="button" href="#" id="addUser" data-modal-target="userModalAdd" data-modal-show="userModalAdd"
                     class="px-5 py-2.5 text-sm font-medium text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     <svg class="w-3.5 h-3.5 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                         width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -84,7 +84,7 @@ templ Users(role string, users []types.User) {
                         <td class="px-6 py-4">
                             <!-- Modal toggle -->
                             <a href="#" type="button"
-                                data-modal-target="userModal" data-modal-show="userModal"
+                                data-modal-target="userModalUpdate" data-modal-show="userModalUpdate"
                                 class="edit-user font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit user</a>
                         </td>
                     </tr>
@@ -126,32 +126,32 @@ templ Users(role string, users []types.User) {
                     var email = row.find('#email').text();
                     var role = row.find('#role').text();
 
-                    $('#userModal').find('form').trigger('reset');
-                    $('#userModal').find('.text-xl').text('Edit user');
-                    $('#userModal').find('button[type="submit"]').text('Update');
-                    $('#userModal').find('label[for="password"]').text('New Password');
-                    $('#userModal').find('#password').removeAttr('required');
-                    $('#userModal').find('#uuid').val(uuid);
-                    $('#userModal').find('#name').val(name);
-                    $('#userModal').find('#email').val(email);
+                    $('#userModalUpdate').find('form').trigger('reset');
+                    $('#userModalUpdate').find('.text-xl').text('Edit user');
+                    $('#userModalUpdate').find('button[type="submit"]').text('Update');
+                    $('#userModalUpdate').find('label[for="password"]').text('New Password');
+                    $('#userModalUpdate').find('#password').removeAttr('required');
+                    $('#userModalUpdate').find('#name').val(name);
+                    $('#userModalUpdate').find('#email').val(email);
                     if (role === 'admin') {
-                        $('#userModal').find('#radio-role-admin').prop('checked', true);
+                        $('#userModalUpdate').find('#radio-role-admin').prop('checked', true);
                     } else {
-                        $('#userModal').find('#radio-role-user').prop('checked', true);
+                        $('#userModalUpdate').find('#radio-role-user').prop('checked', true);
                     }
+                    $('#userModalUpdate').find('form').prepend('<input type="hidden" name="uuid" value="' + uuid + '">'); // Add new hidden input field for user UUID
 
-                    // Force Flowbite to open the modal, ignoring default data-modal attributes
-                    const modal = new Modal(document.getElementById('userModal'));
-                    modal.show();
+                    // // Force Flowbite to open the modal, ignoring default data-modal attributes
+                    // const modal = new Modal(document.getElementById('userModalUpdate'));
+                    // modal.show();
 
-                    $('#userModal').find('#user-modal-hide').on('click', function() {
-                        modal.hide();
-                    });
+                    // $('#userModalUpdate').find('#user-modal-hide').on('click', function() {
+                    //     modal.hide();
+                    // });
 
-                    $('#userModal').on('submit', function(e) {
-                        e.preventDefault();
-                        modal.hide();
-                    });
+                    // $('#userModalUpdate').on('submit', function(e) {
+                    //     e.preventDefault();
+                    //     modal.hide();
+                    // });
 
                 });
             }
@@ -240,14 +240,9 @@ templ Users(role string, users []types.User) {
 
         // Add user modal
         $('#addUser').on('click', function () {
-            $('#userModal').find('form').trigger('reset');                  // Reset form fields
-            $('#userModal').find('.text-xl').text('Add user');              // Replace Modal title   
-            $('#userModal').find('button[type="submit"]').text('Add user'); // Replace Update button with Add button
-            $('#userModal').find('#password').attr('required', 'required'); // Add required attribute to password field
-            $('#userModal').find('#radio-role-user').prop('checked', true); // Default radio button to user role
+            $('#userModalAdd').find('form').trigger('reset');                  // Reset form fields
+            $('#userModalAdd').find('#radio-role-user').prop('checked', true); // Default radio button to user role
         });
-
-
 
         // close modal on escape key
         $(document).on('keydown', function(e) {
@@ -256,13 +251,6 @@ templ Users(role string, users []types.User) {
                 modal.hide();
             }
         });
-
-        // // close modal on submit
-        // $('#userModal').on('submit', function(e) {
-        //     e.preventDefault();
-        //     const modal = new Modal(document.getElementById('userModal'));
-        //     modal.hide();
-        // });
     });
 </script>
 
