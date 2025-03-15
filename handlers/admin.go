@@ -29,6 +29,7 @@ func generatedPhoto(name string) string {
 	}
 	var buf bytes.Buffer
 	if err := png.Encode(&buf, img); err != nil {
+		slog.Error("Error encoding image", "error", err.Error())
 		return ""
 	}
 	return "data:image/jpeg;base64," + base64.StdEncoding.EncodeToString(buf.Bytes())
