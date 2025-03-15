@@ -32,7 +32,7 @@ func Server() {
 		level = slog.LevelError
 	}
 
-	// Create a custom simple logger with the desired format
+	// Custom logger
 	slogger := slog.New(logger.NewSimpleHandler(os.Stdout, level))
 	slog.SetDefault(slogger)
 
@@ -40,10 +40,6 @@ func Server() {
 	e.HideBanner = true
 	e.HidePort = true
 
-	// Root level middleware
-	if os.Getenv("LOG_LEVEL") == "debug" {
-		e.Use(middleware.Logger())
-	}
 	e.Use(middleware.CORS())                                                           // Use CORS middleware to allow cross-origin requests
 	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{Level: 5}))                  // Use Gzip middleware to compress the response
 	e.Use(middleware.Secure())                                                         // Use secure middleware to set security headers
