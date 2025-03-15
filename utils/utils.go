@@ -2,6 +2,7 @@ package utils
 
 import (
 	"crypto/rand"
+	"log/slog"
 	"math/big"
 	"os"
 	"strings"
@@ -12,6 +13,7 @@ import (
 type Map map[string]any
 
 func IsEnvProduction() bool {
+	slog.Debug("Checking environment", "env", os.Getenv("ENV"))
 	return os.Getenv("ENV") == "production"
 }
 
@@ -43,8 +45,10 @@ func GeneratePassphrase(wordCount ...int) string {
 		nBig, err := rand.Int(rand.Reader, big.NewInt(int64(len(words))))
 		if err != nil {
 			// Fallback to first word on error
+			slog.Warn("Error generating passphrase", "error", err)
 			result = append(result, words[0])
 		} else {
+			slog.Debug("Generated passphrase", "word", words[nBig.Int64()])
 			result = append(result, words[nBig.Int64()])
 		}
 	}
@@ -55,12 +59,19 @@ func GeneratePassphrase(wordCount ...int) string {
 func HashPassword(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
+		slog.Debug("Password hashing failed", "error", err)
 		return "", err
 	}
+	slog.Debug("Password hashed successfully")
 	return string(hashedPassword), nil
 }
 
-func VerifyPasswordHash(password, hash string) bool {
+func VerifyPasswordHash(hash string, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
+	if err != nil {
+		slog.Debug("Password verification failed", "error", err)
+		return false
+	}
+	slog.Debug("Password verified successfully")
+	return true
 }
