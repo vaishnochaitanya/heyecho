@@ -35,7 +35,7 @@ func Base(role string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if role != "guest" {
+		if role == "user" || role == "admin" {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Navbar --> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -53,7 +53,7 @@ func Base(role string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if role != "guest" {
+		if role == "user" || role == "admin" {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<main class=\"p-4 md:ml-64 h-auto pt-20\"><div class=\"rounded-lg mb-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

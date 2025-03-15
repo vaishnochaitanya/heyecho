@@ -23,7 +23,7 @@ templ Base(role string) {
 
   <body>
     <div class="antialiased bg-gray-50 dark:bg-gray-900">
-      if role != "guest" {
+      if role == "user" || role == "admin" {
         <!-- Navbar -->
         @components.Navbar()
       }
@@ -31,7 +31,7 @@ templ Base(role string) {
       <!-- Sidebar -->
       @components.Sidebar(role)
 
-      if role != "guest" {
+      if role == "user" || role == "admin" {
         <main class="p-4 md:ml-64 h-auto pt-20">
           <div class="rounded-lg mb-4">
             { children... }
