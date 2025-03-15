@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"crypto/subtle"
 	"encoding/base64"
 	"log/slog"
 	"net/http"
@@ -31,6 +30,7 @@ func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		// Decode the token to get the email and password
 		token, ok := base64.StdEncoding.DecodeString(cookie.Value)
 		if ok != nil {
+			slog.Error("Error decoding token", "error", ok.Error())
 			return c.Redirect(http.StatusFound, "/login")
 		}
 
@@ -47,23 +47,17 @@ func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		// Check if the user email has a valid password
 		if dbuser.Email != email && dbuser.Password != password {
-			slog.Info(email + " failed to login")
+			slog.Debug("Invalid email or password", "email", email)
 			return c.Redirect(http.StatusFound, "/login")
-		}
-
-		// Check if the provided credentials are valid
-		if subtle.ConstantTimeCompare([]byte(password), []byte(dbuser.Password)) == 1 {
-			// If authentication is successful, set the role
-			if email == "admin@example.com" {
-				role = "admin"
-			} else if email != "" {
-				role = "user"
-			}
+		} else {
+			// Set the role for the session
+			role = dbuser.Role
 			c.Set("role", role)
 			return next(c)
 		}
 
 		// If authentication fails, set the role to guest
+		slog.Debug("Authentication failed", "email", email)
 		c.Set("role", "guest")
 		return next(c)
 	}
