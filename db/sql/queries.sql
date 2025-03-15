@@ -1,6 +1,9 @@
 -- name: GetUserByEmail :one
 SELECT * FROM users WHERE email = ?;
 
+-- name: GetUserByEmailAndPassword :one
+SELECT * FROM users WHERE email = ? AND password = ?;
+
 -- name: ListUsers :many
 SELECT * FROM users ORDER BY name;
 
