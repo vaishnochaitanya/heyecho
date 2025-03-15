@@ -60,6 +60,8 @@ func HandleUsers(c echo.Context) error {
 		users = append(users, types.User{
 			Uuid:           u.Uuid,
 			Name:           u.Name,
+			Email:          u.Email,
+			Role:           u.Role,
 			CreatedAt:      u.CreatedAt.Format(dateFormat),
 			UpdatedAt:      u.UpdatedAt.Format(dateFormat),
 			GeneratedPhoto: generatedPhoto(u.Name),
@@ -94,24 +96,21 @@ func HandleCreateUser(c echo.Context) error {
 
 	ctx := context.Background()
 
-	// Check if the user exists
-	dbUser, err := db.CallQueries.GetUserByEmail(ctx, user.Email)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-
-	if dbUser.Uuid != "" {
+	// Continue if the user does not exist
+	_, err := db.CallQueries.GetUserByEmail(ctx, user.Email)
+	if err == nil {
 		return c.JSON(http.StatusConflict, "User already exists")
 	}
 
 	// Create the user
 	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
+		slog.Debug("Add User: Error hashing password", "error", err.Error())
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	uniqueId := strings.ReplaceAll(uuid.New().String(), "-", "")
 
-	err = db.CallQueries.CreateUser(ctx, db.CreateUserParams{
+	if err = db.CallQueries.CreateUser(ctx, db.CreateUserParams{
 		Uuid:      uniqueId,
 		Name:      user.Name,
 		Email:     user.Email,
@@ -119,7 +118,10 @@ func HandleCreateUser(c echo.Context) error {
 		Role:      user.Role,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-	})
+	}); err != nil {
+		slog.Error("Error creating user", "error", err.Error())
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
 	timeNow := time.Now().Format(dateFormat)
 	GeneratedPhoto := generatedPhoto(user.Name)
 	responseHTML := `<tr
