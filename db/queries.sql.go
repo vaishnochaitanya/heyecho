@@ -77,6 +77,31 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 	return i, err
 }
 
+const getUserByEmailAndPassword = `-- name: GetUserByEmailAndPassword :one
+SELECT id, uuid, name, email, password, role, created_at, updated_at FROM users WHERE email = ? AND password = ?
+`
+
+type GetUserByEmailAndPasswordParams struct {
+	Email    string
+	Password string
+}
+
+func (q *Queries) GetUserByEmailAndPassword(ctx context.Context, arg GetUserByEmailAndPasswordParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByEmailAndPassword, arg.Email, arg.Password)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Uuid,
+		&i.Name,
+		&i.Email,
+		&i.Password,
+		&i.Role,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const listUsers = `-- name: ListUsers :many
 SELECT id, uuid, name, email, password, role, created_at, updated_at FROM users ORDER BY name
 `
