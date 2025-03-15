@@ -1,4 +1,4 @@
-run: drop build
+run: build
 	@CGO_ENABLED=1 ./bin/heyecho
 
 build: templ sqlc
