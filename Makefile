@@ -1,4 +1,4 @@
-run: build
+run: drop build
 	@CGO_ENABLED=1 ./bin/heyecho
 
 build: templ sqlc
@@ -20,7 +20,7 @@ migration:
 	@migrate create -ext sql -dir cmd/migrate/migrations $(filter-out $@,$(MAKECMDGOALS))
 
 drop:
-	@rm -f app.db
+	rm -f app.db
 
 seed:
 	@go run cmd/seed/seed.go
