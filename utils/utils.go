@@ -1,8 +1,12 @@
 package utils
 
 import (
-	"crypto/sha256"
+	"crypto/rand"
+	"math/big"
 	"os"
+	"strings"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Map map[string]any
@@ -15,8 +19,48 @@ func AppEnv() string {
 	return os.Getenv("ENV")
 }
 
+func GeneratePassphrase(wordCount ...int) string {
+	// Default to 4 words if not specified
+	count := 4
+	if len(wordCount) > 0 && wordCount[0] > 0 {
+		count = wordCount[0]
+	}
+
+	// List of common words to generate readable passphrases
+	words := []string{
+		"apple", "banana", "orange", "grape", "melon", "cherry", "peach", "lemon", "plum", "kiwi",
+		"castle", "mountain", "river", "forest", "ocean", "desert", "valley", "island", "beach", "hill",
+		"happy", "clever", "brave", "calm", "strong", "gentle", "wise", "quick", "bright", "careful",
+		"jump", "dance", "sing", "write", "read", "sleep", "walk", "run", "swim", "climb",
+		"blue", "green", "red", "yellow", "purple", "white", "black", "orange", "brown", "gray",
+		"time", "world", "year", "day", "night", "hour", "minute", "second", "moment", "decade",
+		"table", "chair", "window", "door", "floor", "wall", "ceiling", "lamp", "desk", "shelf",
+	}
+
+	var result []string
+	for i := 0; i < count; i++ {
+		// Use crypto/rand for better randomness
+		nBig, err := rand.Int(rand.Reader, big.NewInt(int64(len(words))))
+		if err != nil {
+			// Fallback to first word on error
+			result = append(result, words[0])
+		} else {
+			result = append(result, words[nBig.Int64()])
+		}
+	}
+
+	return strings.Join(result, "-")
+}
+
 func HashPassword(password string) (string, error) {
-	hash := sha256.New()
-	hash.Write([]byte(password))
-	return string(hash.Sum(nil)), nil
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hashedPassword), nil
+}
+
+func VerifyPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
