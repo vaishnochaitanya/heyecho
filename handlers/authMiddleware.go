@@ -36,12 +36,16 @@ func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		// Split the token into email and password
 		credentials := string(token)
-		email, password, _ := strings.Cut(credentials, ":")
+		tokenEmail, tokenPassword, found := strings.Cut(credentials, ":")
+		if !found {
+			slog.Error("Error splitting token", "token", credentials)
+			return c.Redirect(http.StatusFound, "/login")
+		}
 
 		// Check if the user email exists
-		dbuser, err := db.CallQueries.GetUserByEmail(c.Request().Context(), email)
+		dbuser, err := db.CallQueries.GetUserByEmail(c.Request().Context(), tokenEmail)
 		if err != nil {
-			slog.Debug("Email does not exist", "email", email)
+			slog.Debug("Email does not exist", "email", tokenEmail)
 			// If the user does not exist, send an error message to frontend
 			color := "error"
 			alert := "Incorrect email or password"
@@ -49,8 +53,8 @@ func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		// Check if the user email has a valid password
-		if dbuser.Email != email && dbuser.Password != password {
-			slog.Debug("Invalid email or password", "email", email)
+		if dbuser.Email != tokenEmail && dbuser.Password != tokenPassword {
+			slog.Debug("Invalid email or password", "email", tokenEmail)
 			// If the user does not exist, send an error message to frontend
 			color := "error"
 			alert := "Incorrect email or password"
