@@ -41,14 +41,20 @@ func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		// Check if the user email exists
 		dbuser, err := db.CallQueries.GetUserByEmail(c.Request().Context(), email)
 		if err != nil {
-			// If the user does not exist, redirect to the login page
-			return c.Redirect(http.StatusFound, "/login")
+			slog.Debug("Email does not exist", "email", email)
+			// If the user does not exist, send an error message to frontend
+			color := "error"
+			alert := "Incorrect email or password"
+			return c.Redirect(http.StatusFound, "/login?level="+color+"&alert="+alert)
 		}
 
 		// Check if the user email has a valid password
 		if dbuser.Email != email && dbuser.Password != password {
 			slog.Debug("Invalid email or password", "email", email)
-			return c.Redirect(http.StatusFound, "/login")
+			// If the user does not exist, send an error message to frontend
+			color := "error"
+			alert := "Incorrect email or password"
+			return c.Redirect(http.StatusFound, "/login?level="+color+"&alert="+alert)
 		} else {
 			// Set the role for the session
 			role = dbuser.Role
