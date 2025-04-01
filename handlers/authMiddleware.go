@@ -55,6 +55,8 @@ func HandleAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		// Check if the user email has a valid password
 		if dbuser.Password != tokenPassword {
 			slog.Debug("Invalid email or password", "email", tokenEmail)
+			// Clear the cookie
+			c.Response().Header().Set("Set-Cookie", "token=; Path=/; Max-Age=-1")
 			// If the user does not exist, send an error message to frontend
 			color := "error"
 			alert := "Incorrect email or password"

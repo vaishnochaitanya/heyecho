@@ -15,6 +15,122 @@ templ Login(role string) {
                         <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                             Sign in to your account
                         </h1>
+                        <!-- Alert container to show messages from URL parameters -->
+                        <div id="alert-container" class="hidden">
+                            <!-- Alert content will be inserted here via JavaScript -->
+                        </div>
+
+                        <script type="text/javascript">
+                            document.addEventListener('DOMContentLoaded', function() {
+                                // Parse URL parameters
+                                const urlParams = new URLSearchParams(window.location.search);
+                                const rawLevel = urlParams.get('level');
+                                const rawAlertMessage = urlParams.get('alert');
+                                
+                                // Sanitize input to prevent XSS attacks
+                                function sanitizeInput(input) {
+                                    if (!input) return '';
+                                    
+                                    // Create a temporary div element to sanitize the HTML
+                                    const tempDiv = document.createElement('div');
+                                    // Set text content (not innerHTML) to safely escape HTML entities
+                                    tempDiv.textContent = input;
+                                    
+                                    // Return the sanitized string
+                                    return tempDiv.textContent;
+                                }
+                                
+                                // Only allow specific valid levels
+                                function validateLevel(level) {
+                                    const validLevels = ['error', 'success', 'warning', 'info'];
+                                    return validLevels.includes(level) ? level : 'info';
+                                }
+                                
+                                // Sanitize inputs
+                                const level = validateLevel(sanitizeInput(rawLevel));
+                                const alertMessage = sanitizeInput(rawAlertMessage);
+                                
+                                if (level && alertMessage) {
+                                    const alertContainer = document.getElementById('alert-container');
+                                    
+                                    // Configure alert styling based on level
+                                    let bgColor, textColor, borderColor;
+                                    let icon = '';
+                                    
+                                    switch(level) {
+                                        case 'error':
+                                            bgColor = 'bg-red-50 dark:bg-gray-800';
+                                            textColor = 'text-red-800 dark:text-red-400';
+                                            borderColor = 'border-red-300 dark:border-red-800';
+                                            icon = '<svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/></svg>';
+                                            break;
+                                        case 'success':
+                                            bgColor = 'bg-green-50 dark:bg-gray-800';
+                                            textColor = 'text-green-800 dark:text-green-400';
+                                            borderColor = 'border-green-300 dark:border-green-800';
+                                            icon = '<svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/></svg>';
+                                            break;
+                                        case 'warning':
+                                            bgColor = 'bg-yellow-50 dark:bg-gray-800';
+                                            textColor = 'text-yellow-800 dark:text-yellow-300';
+                                            borderColor = 'border-yellow-300 dark:border-yellow-800';
+                                            icon = '<svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/></svg>';
+                                            break;
+                                        default:
+                                            bgColor = 'bg-blue-50 dark:bg-gray-800';
+                                            textColor = 'text-blue-800 dark:text-blue-400';
+                                            borderColor = 'border-blue-300 dark:border-blue-800';
+                                            icon = '<svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/></svg>';
+                                    }
+                                    
+                                    // Create the alert element instead of using innerHTML directly
+                                    const alertDiv = document.createElement('div');
+                                    alertDiv.id = 'alert-1';
+                                    alertDiv.className = `flex items-center p-4 mb-4 ${textColor} rounded-lg ${bgColor}`;
+                                    alertDiv.setAttribute('role', 'alert');
+                                    
+                                    // Using DOM methods to safely build the alert
+                                    alertDiv.innerHTML = icon;
+                                    
+                                    // Screen reader text
+                                    const srSpan = document.createElement('span');
+                                    srSpan.className = 'sr-only';
+                                    srSpan.textContent = level;
+                                    alertDiv.appendChild(srSpan);
+                                    
+                                    // Alert message
+                                    const messageDiv = document.createElement('div');
+                                    messageDiv.className = 'ms-3 text-sm font-medium';
+                                    messageDiv.textContent = decodeURIComponent(alertMessage);
+                                    alertDiv.appendChild(messageDiv);
+                                    
+                                    // Close button
+                                    const closeBtn = document.createElement('button');
+                                    closeBtn.type = 'button';
+                                    closeBtn.className = `ms-auto -mx-1.5 -my-1.5 ${bgColor} ${textColor} rounded-lg focus:ring-2 p-1.5 inline-flex items-center justify-center h-8 w-8`;
+                                    closeBtn.setAttribute('data-dismiss-target', '#alert-1');
+                                    closeBtn.setAttribute('aria-label', 'Close');
+                                    closeBtn.innerHTML = `
+                                        <span class="sr-only">Close</span>
+                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                    `;
+                                    closeBtn.addEventListener('click', function() {
+                                        alertContainer.classList.add('hidden');
+                                    });
+                                    alertDiv.appendChild(closeBtn);
+                                    
+                                    // Clear and add the new alert to the container
+                                    alertContainer.innerHTML = '';
+                                    alertContainer.appendChild(alertDiv);
+                                    
+                                    // Show the alert
+                                    alertContainer.classList.remove('hidden');
+                                }
+                            });
+                        </script>
+                        
                         <form class="space-y-4 md:space-y-6" action="/login" method="post">
                             <div>
                                 <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
