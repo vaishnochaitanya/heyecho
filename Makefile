@@ -1,3 +1,8 @@
+.PHONY: run
+
+ping: build
+	@CGO_ENABLED=1 ./bin/heyecho ping
+
 run: build
 	@CGO_ENABLED=1 ./bin/heyecho
 
