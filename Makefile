@@ -1,10 +1,7 @@
 .PHONY: run
 
-ping: build
-	@CGO_ENABLED=1 ./bin/heyecho ping
-
 run: build
-	@CGO_ENABLED=1 ./bin/heyecho
+	@CGO_ENABLED=1 ./bin/heyecho start
 
 build: templ sqlc
 	@go build -o bin/heyecho main.go
@@ -29,3 +26,11 @@ drop:
 
 seed:
 	@go run cmd/seed/seed.go
+
+
+# ClI commands
+help:
+	@CGO_ENABLED=1 ./bin/heyecho help
+
+start:
+	@CGO_ENABLED=1 ./bin/heyecho start
